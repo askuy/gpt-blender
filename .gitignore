@@ -7,7 +7,9 @@ output/recreation-audio.m4a
 __pycache__/
 node_modules/
 .cache/
+dist/
 .DS_Store
 *.pyc
 output/verification.json
 output/media-verification.json
+.idea

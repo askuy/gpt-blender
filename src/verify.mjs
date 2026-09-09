@@ -1,20 +1,31 @@
 import { chromium } from '@playwright/test';
 import assert from 'node:assert/strict';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { spawn } from 'node:child_process';
+import { execFile, spawn } from 'node:child_process';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { promisify } from 'node:util';
 const root = fileURLToPath(new URL('../', import.meta.url));
 for (const folder of ['renders','output']) await mkdir(root+folder,{recursive:true});
-const server=spawn(process.env.PYTHON_BIN || 'python3',[root+'src/serve.py','--port','0'],{stdio:['ignore','pipe','pipe']});
-let browser;
+let browser, server, buildDirectory, serverExit;
 try {
-const base=await new Promise((resolve,reject)=>{
+let base=process.env.PREVIEW_URL;
+if (!base) {
+buildDirectory=await mkdtemp(join(tmpdir(),'niulai-verify-'));
+const binary=join(buildDirectory,process.platform==='win32'?'niulai.exe':'niulai');
+await promisify(execFile)(process.env.GO_BIN || 'go',['build','-o',binary,'.'],{cwd:root,timeout:180000});
+server=spawn(binary,['--addr','127.0.0.1:0'],{stdio:['ignore','pipe','pipe']});
+serverExit=new Promise(resolve=>server.once('exit',resolve));
+base=await new Promise((resolve,reject)=>{
   const timer=setTimeout(()=>reject(new Error('Preview server startup timed out')),15000);
-  let output='';
-  server.stdout.on('data',chunk=>{output+=chunk;const match=output.match(/http:\/\/127\.0\.0\.1:\d+\/web\//);if(match){clearTimeout(timer);resolve(match[0]);}});
+  let output='', stderr='';
+  server.stderr.on('data',chunk=>{stderr+=chunk});
+  server.stdout.on('data',chunk=>{output+=chunk;const match=output.match(/http:\/\/127\.0\.0\.1:\d+\//);if(match){clearTimeout(timer);resolve(match[0]);}});
   server.once('error',error=>{clearTimeout(timer);reject(error)});
-  server.once('exit',code=>{clearTimeout(timer);reject(new Error(`Preview server exited: ${code}`))});
+  server.once('exit',code=>{clearTimeout(timer);reject(new Error(`Preview server exited: ${code} ${stderr}`))});
 });
+}
 browser = await chromium.launch({headless:true,...(process.env.CHROME_BIN?{executablePath:process.env.CHROME_BIN}:{})});
 const errors=[];
 const page=await browser.newPage({viewport:{width:1440,height:1100},deviceScaleFactor:1});
@@ -22,6 +33,7 @@ page.on('pageerror',e=>errors.push(e.message));
 page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`)});
 await page.goto(base);
 await page.waitForFunction(()=>window.niulai?.ready,null,{timeout:60000});
+assert.equal(await page.locator('a[href*=".mp4"], video').count(),0,'Viewer must not include MP4 videos or links');
 await page.screenshot({path:root+'renders/web-desktop.png',fullPage:true});
 await page.getByRole('button',{name:'开始，声音开大一点'}).click();
 await page.waitForFunction(()=>window.niulai.state().time>.5);
@@ -58,10 +70,14 @@ const state=await page.evaluate(()=>window.niulai.state());
 assert.ok(state.triangles>50000,'Scene contains real mesh geometry');
 assert.ok(state.clips>0,'Animation clips are present');
 assert.deepEqual(errors,[]);
-const result={passed:true,checks:['model loads','original audio plays after click','pause stops audio','timeline seeks','dialogue captions','actual camera orbit','replay from free camera','director reset','mobile layout','no page errors'],state};
+const result={passed:true,checks:['model loads','no MP4 videos or links','original audio plays after click','pause stops audio','timeline seeks','dialogue captions','actual camera orbit','replay from free camera','director reset','mobile layout','no page errors'],state};
 await writeFile(root+'output/verification.json',JSON.stringify(result,null,2));
 console.log(JSON.stringify(result));
 } finally {
   await browser?.close();
-  server.kill('SIGTERM');
+  if (server?.pid) {
+    server.kill('SIGTERM');
+    await serverExit;
+  }
+  if (buildDirectory) await rm(buildDirectory,{recursive:true,force:true});
 }

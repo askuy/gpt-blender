@@ -6,26 +6,38 @@
 
 GPT‑6 / Codex 编写并修改 Blender Python 脚本，Blender 负责生成几何体和渲染动画。仓库包含完整代码、可编辑模型、网页预览和成片。
 
-[![原片对照、3D 复刻和镜头绕行](output/contact-sheet.jpg)](https://github.com/askuy/niulai/raw/refs/heads/main/output/niulai-twitter.mp4)
+![原片对照、3D 复刻和镜头绕行](output/contact-sheet.jpg)
 
-**[观看 17 秒成片](https://github.com/askuy/niulai/raw/refs/heads/main/output/niulai-twitter.mp4)** · [14 秒纯 3D 版](https://github.com/askuy/niulai/raw/refs/heads/main/output/niulai-3d.mp4) · [Blender 源文件](output/niulai.blend) · [带动画的 GLB](web/assets/niulai.glb)
+[Blender 源文件](output/niulai.blend) · [带动画的 GLB](web/assets/niulai.glb) · [部署到自己的服务器](deploy/README.md)
 
 ## 本地预览
 
-预览只需要 **Python 3** 和支持 WebGL 的浏览器。模型、音轨和前端库已包含在仓库里，不调用 AI API。
+从源码启动预览需要 **Go 1.26+** 和支持 WebGL 的浏览器。模型、音轨和前端库内置在 Go 可执行文件中，不调用 AI API；服务器运行时无需 Go 编译器、Python 或 Node.js。
 
 ```sh
 git clone git@github.com:askuy/niulai.git
 cd niulai
-python3 src/serve.py
+go run .
 ```
 
-打开 **http://127.0.0.1:8766/web/**。端口占用时加 `--port 8767`。
+打开 **http://127.0.0.1:8766/**。端口占用时运行 `go run . --addr 127.0.0.1:8767`。也可以用 `npm run dev` 启动。
 
 - 点击开始按钮，播放原片对白。
 - 拖动旋转镜头，滚轮或双指缩放。
 - 拖动进度条、重播“妈妈”，或切回导演视角。
 - 网页界面采用简体中文，对白配有英文字幕。
+
+## 部署到服务器
+
+构建 Linux x86_64 单文件服务：
+
+```sh
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags='-s -w' -o dist/niulai-linux-amd64 .
+```
+
+上传后运行 `./niulai-linux-amd64 --addr :8766`，即可通过服务器的 8766 端口访问。服务只发布 3D 网页和对白音轨，不包含 MP4。健康检查为 `/healthz`。
+
+ARM64 构建、systemd 常驻运行、反向代理和远程验证见 [部署说明](deploy/README.md)。下文的 Python / Blender 工具仅用于离线重新制作模型和视频。
 
 ## GPT‑6 在 3D 工作流中的优势
 
@@ -112,12 +124,14 @@ npm test
 
 检查程序会在空闲端口启动自己的本地服务器，结束后关闭。覆盖模型加载、音频播放与暂停、进度拖动、字幕、实际镜头旋转、重播和手机布局。
 
-已有浏览器可通过 `CHROME_BIN=/path/to/chrome npm test` 使用；Python 命令名不同可设置 `PYTHON_BIN`。截图写入 `renders/`，报告写入 `output/verification.json`。
+已有浏览器可通过 `CHROME_BIN=/path/to/chrome npm test` 使用。检查程序会编译并启动 Go 服务，也可通过 `PREVIEW_URL=https://你的域名/ node src/verify.mjs` 验证线上网页。截图写入 `renders/`，报告写入 `output/verification.json`。
 
 ## 文件位置
 
 | 路径 | 内容 |
 | --- | --- |
+| `main.go` | 内置网页资源的 Go HTTP 服务 |
+| `deploy/` | 服务器部署说明与 systemd 服务配置 |
 | `src/build_scene.py` | 几何体、材质、角色形态键与动画 |
 | `src/prepare_reference.py` | 原声提取、音量包络计算 |
 | `src/compose_video.py` | 原片对照、音轨与字幕合成 |
