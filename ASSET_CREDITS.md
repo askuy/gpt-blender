@@ -19,6 +19,14 @@ Original film footage, dialogue and original character rights remain with their 
 
 GPT‑6 / Codex authored and revised the scripts through multiple iterations and rendered checks. An exact API model snapshot and a complete timestamped prompt log were not recorded.
 
+## Saber fan figure
+
+- Character: **Saber / Artoria Pendragon**, *Fate/stay night*, © TYPE-MOON and the respective rights holders. This is an unofficial fan-art exercise, unaffiliated with the original publishers.
+- `src/build_saber.py` procedurally constructs the stylized figure, materials, armature, eye shape keys and sword choreography in Blender 4.5.13 LTS. Both arms use analytic two-bone IK, baked to ordinary skeletal keyframes.
+- `output/saber/saber.blend` is the editable scene; `web/saber/assets/saber.glb` is the optimized export. No official mesh, external 3D model, motion-capture data, voice or soundtrack is included.
+- `output/saber/contact-sheet.jpg` contains renders of this Blender scene. The viewer's studio environment, shadow texture and gold particles are generated locally in code. No AI-generated raster illustration is included in the delivered assets.
+- The demo follows the repository's script, render, inspect and revise workflow. It is a stylized procedural interpretation, not a scan or a production character asset.
+
 ## Third-party software
 
 - **Three.js 0.180.0**: local browser rendering library and its GLTF loader, OrbitControls and BufferGeometryUtils. MIT license: [`web/vendor/THREE-LICENSE.txt`](web/vendor/THREE-LICENSE.txt). Upstream: https://github.com/mrdoob/three.js/tree/r180

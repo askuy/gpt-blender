@@ -1,5 +1,5 @@
 renders/
-output/*.blend1
+output/**/*.blend1
 output/reference-intro.mp4
 output/render-silent.mp4
 output/recreation-raw.mp4
@@ -12,4 +12,5 @@ dist/
 *.pyc
 output/verification.json
 output/media-verification.json
+output/saber/verification*.json
 .idea

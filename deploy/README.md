@@ -7,12 +7,13 @@
 - 开发仓库：`askuy/niulai`，保持私有。
 - 网页发布仓库：`askuy/niulai-site`，公开且只保存 `web/` 的内容。
 - 访问地址：**https://askuy.github.io/niulai-site/**。
+- Saber 手办：**https://askuy.github.io/niulai-site/saber/**。
 
 当前账号套餐不支持从私有仓库启用 Pages，因此使用独立的公开网页仓库免费托管。发布仓库在 **Settings → Pages** 中选择 **Deploy from a branch → main → /(root)**。推送网页资源后，GitHub 自动构建并发布。
 
 ## 更新网站
 
-先运行 `npm test`，确认页面正常，然后执行：
+先运行 `npm test` 和 `npm run test:saber`，确认两个页面正常，然后执行：
 
 ```sh
 npm run publish:pages -- --dry-run
@@ -41,6 +42,7 @@ npm run dev
 ```sh
 npx playwright install chromium
 npm test
+npm run test:saber
 ```
 
 检查程序使用临时静态服务器，验证模型、音轨、字幕、时间轴、镜头和手机布局，并确认 MP4 与仓库源码未公开。
@@ -49,6 +51,7 @@ npm test
 
 ```sh
 PREVIEW_URL=https://askuy.github.io/niulai-site/ npm test
+PREVIEW_URL=https://askuy.github.io/niulai-site/ npm run test:saber
 ```
 
 已有浏览器可通过 `CHROME_BIN=/path/to/chrome` 指定。报告写入 `output/verification.json`，截图写入 `renders/`。

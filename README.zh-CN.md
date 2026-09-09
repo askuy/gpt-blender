@@ -10,6 +10,28 @@ GPT‑6 / Codex 编写并修改 Blender Python 脚本，Blender 负责生成几�
 
 [Blender 源文件](output/niulai.blend) · [带动画的 GLB](web/assets/niulai.glb) · [GitHub Pages 部署](deploy/README.md)
 
+## 新 Demo：Saber 数字手办
+
+**[打开 Saber 展柜](https://askuy.github.io/niulai-site/saber/)**。以《Fate/stay night》的 Saber 为灵感，制作了可从正面、侧面、背面观看的风格化三维手办：金色发束与编发、蓝裙、银色盔甲、Excalibur 和展示底座都有实际几何体。
+
+![Saber 的正面、背面、抬剑与蓄力姿态](output/saber/contact-sheet.jpg)
+
+- 默认有轻微呼吸、转头、眨眼和裙摆摆动。
+- 点击「抬剑致意」或「唤醒圣剑」，播放举剑、蓄力、挥剑和收剑动作；双手通过双骨骼 IK 跟随剑柄，烘焙后导出。
+- 可以自由旋转、拉近细节、切换三种灯光、查看白模，或暂停并保存 PNG 截图。暂停也会冻结光效。
+
+沿用本项目的 **GPT‑6 / Codex 编写 Blender Python → Eevee 渲染检查 → 修改模型与动作 → 导出带骨骼和形态键的 GLB → Three.js 展示** 流程。网页中的金色粒子、灯光和相机交互由 Three.js 负责；角色几何与动作来自 Blender。它是程序化风格的同人练习，未使用官方模型或动作捕捉。
+
+```sh
+npm run dev                          # 打开 /saber/
+npm run saber:scene -- --preview     # 离线重建工程、GLB 和六张检查图
+npm run test:saber                   # 验证模型、真实骨骼运动和网页交互
+```
+
+构建脚本：[src/build_saber.py](src/build_saber.py)；可编辑工程：[output/saber/saber.blend](output/saber/saber.blend)；网页模型：[web/saber/assets/saber.glb](web/saber/assets/saber.glb)。动作时间轴为 24 fps、384 帧：0–4 秒待机、4–10 秒致意、10–16 秒圣剑动作。完整工程保留独立部件，导出时才按材质合并网格；检查图保存在 `renders/saber/`。
+
+模型约 **7.52 MB（未压缩文件大小）**，首次访问另需下载 Three.js 和页面文件。资源加载完成后，播放动作、换灯光和旋转镜头不产生新的网络请求。网站继续使用免费 GitHub Pages，没有 Python / Go 后端或 AI API 调用；Python 只在离线 Blender 构建时使用。用户设置「减少动态效果」时，首次打开会保持静止。
+
 ## 本地预览
 
 网站是纯静态页面，模型、音轨和前端库都在 `web/` 中，不调用 AI API。开发机使用 **Node.js 22+** 启动本地预览；访问者只需支持 WebGL 的浏览器，线上无需运行后端服务。
@@ -85,7 +107,7 @@ npm ci
 npm run scene -- --preview
 ```
 
-启动器会查找 `PATH` 中的 `blender` 或 macOS 标准安装位置。其他安装路径通过环境变量指定：
+启动器会查找 `PATH` 中的 `blender`、macOS 标准安装位置或 `~/.local/opt/blender-4.5.13/Blender.app`。其他安装路径通过环境变量指定：
 
 ```sh
 BLENDER_BIN=/path/to/blender npm run scene -- --preview
@@ -115,11 +137,14 @@ python3 src/compose_video.py
 npm ci
 npx playwright install chromium
 npm test
+npm run test:saber
 ```
 
 检查程序会在空闲端口启动自己的本地服务器，结束后关闭。覆盖模型加载、音频播放与暂停、进度拖动、字幕、实际镜头旋转、重播和手机布局。
 
 已有浏览器可通过 `CHROME_BIN=/path/to/chrome npm test` 使用。检查程序会启动临时静态服务器，也可通过 `PREVIEW_URL=https://askuy.github.io/niulai-site/ npm test` 验证线上网页。截图写入 `renders/`，报告写入 `output/verification.json`。
+
+Saber 使用相同的环境变量，`PREVIEW_URL` 填站点根地址（程序会追加 `saber/`）。Saber 检查涵盖宝石导出尺寸、眨眼形态键、手部与剑的实际运动、暂停光效、动作结束回待机、镜头、灯光、白模、截图、手机布局和额外网络请求；报告写入 `output/saber/verification.json`。
 
 ## 文件位置
 
@@ -128,6 +153,9 @@ npm test
 | `src/publish_pages.mjs` | 将网页资源发布到独立 Pages 仓库 |
 | `deploy/` | 静态网站发布与验证说明 |
 | `src/build_scene.py` | 几何体、材质、角色形态键与动画 |
+| `src/build_saber.py` | Saber 手办、双手握剑 IK、骨骼动画与 GLB 导出 |
+| `src/verify_saber.mjs` | Saber 网页与动画验证 |
+| `web/saber/` | Saber 展柜及独立模型资源 |
 | `src/prepare_reference.py` | 原声提取、音量包络计算 |
 | `src/compose_video.py` | 原片对照、音轨与字幕合成 |
 | `src/caption_frames.mjs` | 使用 Sharp 生成透明字幕图层 |
