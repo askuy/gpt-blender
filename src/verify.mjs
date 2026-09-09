@@ -1,30 +1,30 @@
 import { chromium } from '@playwright/test';
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { cp, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { execFile, spawn } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { promisify } from 'node:util';
+import httpServer from 'http-server';
 const root = fileURLToPath(new URL('../', import.meta.url));
 for (const folder of ['renders','output']) await mkdir(root+folder,{recursive:true});
-let browser, server, buildDirectory, serverExit;
+let browser, server, siteDirectory;
 try {
 let base=process.env.PREVIEW_URL;
 if (!base) {
-buildDirectory=await mkdtemp(join(tmpdir(),'niulai-verify-'));
-const binary=join(buildDirectory,process.platform==='win32'?'niulai.exe':'niulai');
-await promisify(execFile)(process.env.GO_BIN || 'go',['build','-o',binary,'.'],{cwd:root,timeout:180000});
-server=spawn(binary,['--addr','127.0.0.1:0'],{stdio:['ignore','pipe','pipe']});
-serverExit=new Promise(resolve=>server.once('exit',resolve));
-base=await new Promise((resolve,reject)=>{
-  const timer=setTimeout(()=>reject(new Error('Preview server startup timed out')),15000);
-  let output='', stderr='';
-  server.stderr.on('data',chunk=>{stderr+=chunk});
-  server.stdout.on('data',chunk=>{output+=chunk;const match=output.match(/http:\/\/127\.0\.0\.1:\d+\//);if(match){clearTimeout(timer);resolve(match[0]);}});
-  server.once('error',error=>{clearTimeout(timer);reject(error)});
-  server.once('exit',code=>{clearTimeout(timer);reject(new Error(`Preview server exited: ${code} ${stderr}`))});
+// Match the /niulai/ subdirectory used by GitHub Pages.
+siteDirectory=await mkdtemp(join(tmpdir(),'niulai-pages-'));
+await cp(root+'web',join(siteDirectory,'niulai'),{recursive:true});
+server=httpServer.createServer({root:siteDirectory,cache:-1,showDir:false});
+await new Promise((resolve,reject)=>{
+  server.server.once('error',reject);
+  server.listen(0,'127.0.0.1',resolve);
 });
+base=`http://127.0.0.1:${server.server.address().port}/niulai/`;
+}
+for (const path of ['reference/movie-excerpt.mp4','output/niulai-twitter.mp4','package.json']) {
+  const response=await fetch(new URL(path,base));
+  await response.arrayBuffer();
+  assert.equal(response.status,404,`${path} must not be published`);
 }
 browser = await chromium.launch({headless:true,...(process.env.CHROME_BIN?{executablePath:process.env.CHROME_BIN}:{})});
 const errors=[];
@@ -70,14 +70,14 @@ const state=await page.evaluate(()=>window.niulai.state());
 assert.ok(state.triangles>50000,'Scene contains real mesh geometry');
 assert.ok(state.clips>0,'Animation clips are present');
 assert.deepEqual(errors,[]);
-const result={passed:true,checks:['model loads','no MP4 videos or links','original audio plays after click','pause stops audio','timeline seeks','dialogue captions','actual camera orbit','replay from free camera','director reset','mobile layout','no page errors'],state};
+const result={passed:true,checks:['only viewer files are published','model loads','no MP4 videos or links','original audio plays after click','pause stops audio','timeline seeks','dialogue captions','actual camera orbit','replay from free camera','director reset','mobile layout','no page errors'],state};
 await writeFile(root+'output/verification.json',JSON.stringify(result,null,2));
 console.log(JSON.stringify(result));
 } finally {
   await browser?.close();
-  if (server?.pid) {
-    server.kill('SIGTERM');
-    await serverExit;
+  if (server) {
+    server.server.closeAllConnections();
+    await new Promise(resolve=>server.server.close(resolve));
   }
-  if (buildDirectory) await rm(buildDirectory,{recursive:true,force:true});
+  if (siteDirectory) await rm(siteDirectory,{recursive:true,force:true});
 }

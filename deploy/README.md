@@ -1,71 +1,44 @@
-# 部署 Go 网页服务
+# 发布到 GitHub Pages
 
-服务使用 Go 标准库，把 `web/` 中的 HTML、CSS、JavaScript、GLB、镜头数据和 M4A 对白内置在一个可执行文件中。部署不需要 Python、Node.js、Blender 或额外资源目录；MP4、`reference/`、`output/` 和源码均不对外提供。
+网站是完整的静态页面，发布目录为 `web/`。模型、音轨和 Three.js 都在这个目录中，动画由访问者的浏览器运行。线上不需要 Go、Python、Node.js 或数据库。
 
-## 构建
+## 自动发布
 
-在开发机使用 Go 1.26 或更新版本构建。目标为 Linux x86_64 时：
+1. 仓库管理员在 **Settings → Pages → Build and deployment → Source** 中选择 **GitHub Actions**。这项设置只需做一次。
+2. 将代码推送到 `main`。修改 `web/` 或发布工作流时会自动部署；也可以在 **Actions → Deploy viewer to GitHub Pages → Run workflow** 手动部署。
+3. 工作流只上传 `web/`，不需要构建步骤，也不安装开发依赖。MP4、Blender 文件和仓库源码不会发布到网站。
+4. 部署成功后，站点地址为 **https://askuy.github.io/niulai/**。
 
-```sh
-CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags='-s -w' -o dist/niulai-linux-amd64 .
-```
+页面使用相对路径，兼容 GitHub Pages 的 `/niulai/` 子目录。`.nojekyll` 标记用于跳过 Jekyll 处理。
 
-目标为 Linux ARM64 时：
+公开仓库可使用免费 Pages；私有仓库需要支持私有仓库 Pages 的账号套餐。仓库可见性由所有者决定。
 
-```sh
-CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -trimpath -ldflags='-s -w' -o dist/niulai-linux-arm64 .
-```
+## 本地预览
 
-在服务器上用 `uname -m` 确认架构：`x86_64` 对应 `amd64`，`aarch64` 对应 `arm64`。上传对应的文件，安装为 `/opt/niulai/niulai`，赋予可执行权限。更换网页或模型后需要重新构建并发布这个文件。
-
-## 启动
-
-使用已有反向代理提供 HTTPS 时，服务监听本机：
-
-```sh
-/opt/niulai/niulai --addr 127.0.0.1:8766
-```
-
-将现有站点的上游指向 `http://127.0.0.1:8766`，并保留 `Range` 和缓存校验请求头。建议在反向代理启用 JavaScript、JSON、CSS 和 GLB 的 gzip 压缩。服务通过 ETag 校验缓存，未变化的资源返回 304；支持音频分段请求。
-
-如果暂时直接通过 IP 和端口访问：
-
-```sh
-/opt/niulai/niulai --addr :8766
-```
-
-网页地址是 `http://服务器IP:8766/`，需要相应端口已放行。旧的 `/web/` 地址会跳转到首页。
-
-## systemd 常驻运行
-
-仓库中的 `niulai.service` 使用独立动态用户运行，并监听 `127.0.0.1:8766`，适合接入已有反向代理。将二进制安装到上文路径后，在目标服务器执行：
-
-```sh
-sudo install -m 644 niulai.service /etc/systemd/system/niulai.service
-sudo systemctl daemon-reload
-sudo systemctl enable --now niulai
-sudo systemctl status niulai --no-pager
-curl --fail http://127.0.0.1:8766/healthz
-```
-
-发布新版本时保留上一份二进制以便回滚，替换文件后执行 `sudo systemctl restart niulai`，再检查健康状态和网页。发布到 opcops 管理的环境时，使用该环境的部署规范和控制面流程。
-
-## 验证
-
-开发机运行：
+开发机安装 Node.js 22+ 后运行：
 
 ```sh
 npm ci
+npm run dev
+```
+
+默认打开 **http://127.0.0.1:8080/**；端口占用时以终端输出的地址为准。用 `npm run dev -- -p 8767` 可指定端口。本地预览仅提供 `web/` 中的文件。
+
+浏览器的模块与资源请求需要通过 HTTP 访问，请使用预览地址打开页面。
+
+## 验证
+
+```sh
 npx playwright install chromium
 npm test
 ```
 
-其中 Go 测试验证公开资源范围、MP4 返回 404、模型缓存及音频 Range 请求；浏览器测试验证真实模型、音轨、字幕、时间轴、镜头和手机布局。
+检查程序使用临时静态服务器，验证模型、音轨、字幕、时间轴、镜头和手机布局，并确认 MP4 与仓库源码未公开。
 
-验证已发布的站点时，在开发机执行以下命令，将地址换为实际地址：
+验证线上站点：
 
 ```sh
-PREVIEW_URL=https://你的域名/ node src/verify.mjs
+PREVIEW_URL=https://askuy.github.io/niulai/ npm test
 ```
 
-浏览器测试访问 `PREVIEW_URL`，不在本地另启服务；服务器不需要测试依赖。
+已有浏览器可通过 `CHROME_BIN=/path/to/chrome` 指定。报告写入 `output/verification.json`，截图写入 `renders/`。

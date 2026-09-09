@@ -8,36 +8,33 @@ GPT‑6 / Codex wrote and revised the Blender Python scripts. Blender generated 
 
 ![Original scene, 3D recreation and camera reveal](output/contact-sheet.jpg)
 
-[Blender scene](output/niulai.blend) · [Animated GLB](web/assets/niulai.glb) · [Server deployment](deploy/README.md)
+[Blender scene](output/niulai.blend) · [Animated GLB](web/assets/niulai.glb) · [GitHub Pages deployment](deploy/README.md)
 
 ## Run the interactive preview
 
-Building the preview requires **Go 1.26+** and a browser with WebGL support. The model, audio and viewer libraries are embedded in a single Go executable; running it requires no Go compiler, Python, Node.js or AI API calls.
+The website is entirely static. Its model, audio and viewer libraries live in `web/`, with no AI API calls. Use **Node.js 22+** for local preview; visitors only need a browser with WebGL support. Hosting requires no backend runtime.
 
 ```sh
 git clone git@github.com:askuy/niulai.git
 cd niulai
-go run .
+npm ci
+npm run dev
 ```
 
-Open **http://127.0.0.1:8766/**. Run `go run . --addr 127.0.0.1:8767` if the default port is occupied. `npm run dev` also starts the Go server.
+The default address is **http://127.0.0.1:8080/**; use the address printed in the terminal if that port is occupied. Run `npm run dev -- -p 8767` to choose a port explicitly.
 
 - Press the start button to play with the original dialogue.
 - Drag to orbit the camera; scroll or pinch to zoom.
 - Scrub the timeline, replay “Mama!”, or return to the director's camera.
 - The preview interface is in Simplified Chinese; dialogue has English subtitles.
 
-## Deploy to your server
+## GitHub Pages
 
-Build a standalone executable for Linux x86_64:
+The repository includes a GitHub Actions deployment workflow. An administrator selects **GitHub Actions** under **Settings → Pages → Source** once; pushing viewer changes to `main` then publishes the site automatically.
 
-```sh
-CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags='-s -w' -o dist/niulai-linux-amd64 .
-```
+After a successful deployment, the site is available at **https://askuy.github.io/niulai/**. The workflow publishes `web/` directly, including the interactive viewer and dialogue audio, with no MP4 videos or backend runtime.
 
-Upload it and run `./niulai-linux-amd64 --addr :8766` to serve the viewer on port 8766. The executable ships only the interactive viewer and dialogue audio, with no MP4 videos. Health is available at `/healthz`.
-
-See [deployment instructions](deploy/README.md) for ARM64 builds, systemd, reverse proxy setup and remote verification. The Python / Blender tools below are only used for offline asset and video generation.
+See [deployment instructions](deploy/README.md) for Pages setup and remote verification. The Python / Blender tools below are only used for offline asset and video generation.
 
 ## What GPT‑6 contributes to 3D work
 
@@ -133,14 +130,14 @@ npm test
 
 The check starts its own local server on an available port and stops it afterward. It checks model loading, audio start/pause, timeline seeking, subtitles, actual camera movement, replay, director reset and mobile layout.
 
-You can use an existing browser with `CHROME_BIN=/path/to/chrome npm test`. The check builds and starts the Go server; use `PREVIEW_URL=https://your-domain/ node src/verify.mjs` to check a deployed viewer. Screenshots are written to `renders/`; the local report is `output/verification.json`.
+You can use an existing browser with `CHROME_BIN=/path/to/chrome npm test`. The check starts a temporary static server; use `PREVIEW_URL=https://askuy.github.io/niulai/ npm test` to check the deployed viewer. Screenshots are written to `renders/`; the local report is `output/verification.json`.
 
 ## Files
 
 | Path | Purpose |
 | --- | --- |
-| [`main.go`](main.go) | Go HTTP server with embedded viewer assets |
-| [`deploy/`](deploy/) | Server deployment guide and systemd service |
+| [`.github/workflows/pages.yml`](.github/workflows/pages.yml) | GitHub Pages deployment workflow |
+| [`deploy/`](deploy/) | Static site deployment and verification guide |
 | [`src/build_scene.py`](src/build_scene.py) | Procedural models, materials, facial shape keys and animation |
 | [`src/prepare_reference.py`](src/prepare_reference.py) | Dialogue extraction and amplitude analysis |
 | [`src/compose_video.py`](src/compose_video.py) | Video editing, original audio and bilingual captions |

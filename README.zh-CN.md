@@ -8,36 +8,33 @@ GPT‑6 / Codex 编写并修改 Blender Python 脚本，Blender 负责生成几�
 
 ![原片对照、3D 复刻和镜头绕行](output/contact-sheet.jpg)
 
-[Blender 源文件](output/niulai.blend) · [带动画的 GLB](web/assets/niulai.glb) · [部署到自己的服务器](deploy/README.md)
+[Blender 源文件](output/niulai.blend) · [带动画的 GLB](web/assets/niulai.glb) · [GitHub Pages 部署](deploy/README.md)
 
 ## 本地预览
 
-从源码启动预览需要 **Go 1.26+** 和支持 WebGL 的浏览器。模型、音轨和前端库内置在 Go 可执行文件中，不调用 AI API；服务器运行时无需 Go 编译器、Python 或 Node.js。
+网站是纯静态页面，模型、音轨和前端库都在 `web/` 中，不调用 AI API。开发机使用 **Node.js 22+** 启动本地预览；访问者只需支持 WebGL 的浏览器，线上无需运行后端服务。
 
 ```sh
 git clone git@github.com:askuy/niulai.git
 cd niulai
-go run .
+npm ci
+npm run dev
 ```
 
-打开 **http://127.0.0.1:8766/**。端口占用时运行 `go run . --addr 127.0.0.1:8767`。也可以用 `npm run dev` 启动。
+默认打开 **http://127.0.0.1:8080/**；端口占用时以终端输出的地址为准。也可以运行 `npm run dev -- -p 8767` 指定端口。
 
 - 点击开始按钮，播放原片对白。
 - 拖动旋转镜头，滚轮或双指缩放。
 - 拖动进度条、重播“妈妈”，或切回导演视角。
 - 网页界面采用简体中文，对白配有英文字幕。
 
-## 部署到服务器
+## GitHub Pages
 
-构建 Linux x86_64 单文件服务：
+仓库自带 GitHub Actions 发布工作流。管理员在 **Settings → Pages → Source** 选择 **GitHub Actions** 后，向 `main` 推送网页修改即可自动发布。
 
-```sh
-CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags='-s -w' -o dist/niulai-linux-amd64 .
-```
+部署成功后的地址为 **https://askuy.github.io/niulai/**。工作流直接发布 `web/`，包含 3D 网页和对白音轨，不发布 MP4，无需 Go 或其他后端运行环境。
 
-上传后运行 `./niulai-linux-amd64 --addr :8766`，即可通过服务器的 8766 端口访问。服务只发布 3D 网页和对白音轨，不包含 MP4。健康检查为 `/healthz`。
-
-ARM64 构建、systemd 常驻运行、反向代理和远程验证见 [部署说明](deploy/README.md)。下文的 Python / Blender 工具仅用于离线重新制作模型和视频。
+发布设置和远程验证见 [部署说明](deploy/README.md)。下文的 Python / Blender 工具仅用于离线重新制作模型和视频。
 
 ## GPT‑6 在 3D 工作流中的优势
 
@@ -124,14 +121,14 @@ npm test
 
 检查程序会在空闲端口启动自己的本地服务器，结束后关闭。覆盖模型加载、音频播放与暂停、进度拖动、字幕、实际镜头旋转、重播和手机布局。
 
-已有浏览器可通过 `CHROME_BIN=/path/to/chrome npm test` 使用。检查程序会编译并启动 Go 服务，也可通过 `PREVIEW_URL=https://你的域名/ node src/verify.mjs` 验证线上网页。截图写入 `renders/`，报告写入 `output/verification.json`。
+已有浏览器可通过 `CHROME_BIN=/path/to/chrome npm test` 使用。检查程序会启动临时静态服务器，也可通过 `PREVIEW_URL=https://askuy.github.io/niulai/ npm test` 验证线上网页。截图写入 `renders/`，报告写入 `output/verification.json`。
 
 ## 文件位置
 
 | 路径 | 内容 |
 | --- | --- |
-| `main.go` | 内置网页资源的 Go HTTP 服务 |
-| `deploy/` | 服务器部署说明与 systemd 服务配置 |
+| `.github/workflows/pages.yml` | GitHub Pages 自动发布工作流 |
+| `deploy/` | 静态网站发布与验证说明 |
 | `src/build_scene.py` | 几何体、材质、角色形态键与动画 |
 | `src/prepare_reference.py` | 原声提取、音量包络计算 |
 | `src/compose_video.py` | 原片对照、音轨与字幕合成 |
