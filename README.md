@@ -30,11 +30,9 @@ The default address is **http://127.0.0.1:8080/**; use the address printed in th
 
 ## GitHub Pages
 
-The repository includes a GitHub Actions deployment workflow. An administrator selects **GitHub Actions** under **Settings → Pages → Source** once; pushing viewer changes to `main` then publishes the site automatically.
+The site is hosted at **https://askuy.github.io/niulai-site/**. Development sources stay in this private repository; the public `askuy/niulai-site` repository contains only the viewer, model and dialogue audio from `web/` and uses free GitHub Pages hosting.
 
-After a successful deployment, the site is available at **https://askuy.github.io/niulai/**. The workflow publishes `web/` directly, including the interactive viewer and dialogue audio, with no MP4 videos or backend runtime.
-
-See [deployment instructions](deploy/README.md) for Pages setup and remote verification. The Python / Blender tools below are only used for offline asset and video generation.
+Run `npm run publish:pages` to update the website using Git over SSH. No backend runtime is needed. See [deployment instructions](deploy/README.md) for details. The Python / Blender tools below are only used for offline asset and video generation.
 
 ## What GPT‑6 contributes to 3D work
 
@@ -130,13 +128,13 @@ npm test
 
 The check starts its own local server on an available port and stops it afterward. It checks model loading, audio start/pause, timeline seeking, subtitles, actual camera movement, replay, director reset and mobile layout.
 
-You can use an existing browser with `CHROME_BIN=/path/to/chrome npm test`. The check starts a temporary static server; use `PREVIEW_URL=https://askuy.github.io/niulai/ npm test` to check the deployed viewer. Screenshots are written to `renders/`; the local report is `output/verification.json`.
+You can use an existing browser with `CHROME_BIN=/path/to/chrome npm test`. The check starts a temporary static server; use `PREVIEW_URL=https://askuy.github.io/niulai-site/ npm test` to check the deployed viewer. Screenshots are written to `renders/`; the local report is `output/verification.json`.
 
 ## Files
 
 | Path | Purpose |
 | --- | --- |
-| [`.github/workflows/pages.yml`](.github/workflows/pages.yml) | GitHub Pages deployment workflow |
+| [`src/publish_pages.mjs`](src/publish_pages.mjs) | Publish viewer assets to the separate Pages repository |
 | [`deploy/`](deploy/) | Static site deployment and verification guide |
 | [`src/build_scene.py`](src/build_scene.py) | Procedural models, materials, facial shape keys and animation |
 | [`src/prepare_reference.py`](src/prepare_reference.py) | Dialogue extraction and amplitude analysis |

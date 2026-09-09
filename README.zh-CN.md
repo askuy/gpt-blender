@@ -30,11 +30,9 @@ npm run dev
 
 ## GitHub Pages
 
-仓库自带 GitHub Actions 发布工作流。管理员在 **Settings → Pages → Source** 选择 **GitHub Actions** 后，向 `main` 推送网页修改即可自动发布。
+网站发布在 **https://askuy.github.io/niulai-site/**。开发仓库保持私有，公开的 `askuy/niulai-site` 只保存 `web/` 中的网页、模型和音轨，通过免费 GitHub Pages 托管。
 
-部署成功后的地址为 **https://askuy.github.io/niulai/**。工作流直接发布 `web/`，包含 3D 网页和对白音轨，不发布 MP4，无需 Go 或其他后端运行环境。
-
-发布设置和远程验证见 [部署说明](deploy/README.md)。下文的 Python / Blender 工具仅用于离线重新制作模型和视频。
+运行 `npm run publish:pages` 可更新网站，需要 Git 的 SSH 推送权限。下文的 Python / Blender 工具仅用于离线重新制作模型和视频；发布过程无需后端运行环境。详情见 [部署说明](deploy/README.md)。
 
 ## GPT‑6 在 3D 工作流中的优势
 
@@ -121,13 +119,13 @@ npm test
 
 检查程序会在空闲端口启动自己的本地服务器，结束后关闭。覆盖模型加载、音频播放与暂停、进度拖动、字幕、实际镜头旋转、重播和手机布局。
 
-已有浏览器可通过 `CHROME_BIN=/path/to/chrome npm test` 使用。检查程序会启动临时静态服务器，也可通过 `PREVIEW_URL=https://askuy.github.io/niulai/ npm test` 验证线上网页。截图写入 `renders/`，报告写入 `output/verification.json`。
+已有浏览器可通过 `CHROME_BIN=/path/to/chrome npm test` 使用。检查程序会启动临时静态服务器，也可通过 `PREVIEW_URL=https://askuy.github.io/niulai-site/ npm test` 验证线上网页。截图写入 `renders/`，报告写入 `output/verification.json`。
 
 ## 文件位置
 
 | 路径 | 内容 |
 | --- | --- |
-| `.github/workflows/pages.yml` | GitHub Pages 自动发布工作流 |
+| `src/publish_pages.mjs` | 将网页资源发布到独立 Pages 仓库 |
 | `deploy/` | 静态网站发布与验证说明 |
 | `src/build_scene.py` | 几何体、材质、角色形态键与动画 |
 | `src/prepare_reference.py` | 原声提取、音量包络计算 |

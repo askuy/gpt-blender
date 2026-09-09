@@ -9,6 +9,7 @@
   },
   "scripts": {
     "dev": "http-server web -a 127.0.0.1 -c-1 -d false",
+    "publish:pages": "node src/publish_pages.mjs",
     "scene": "node src/run_blender.mjs",
     "render": "node src/run_blender.mjs --render",
     "video": "python3 src/compose_video.py",
