@@ -1,0 +1,5 @@
+# Preserve upstream library formatting and keep language statistics focused on this project.
+web/vendor/** linguist-vendored -whitespace
+output/** linguist-generated
+src/audio-envelope.json linguist-generated
+web/assets/cameras.json linguist-generated

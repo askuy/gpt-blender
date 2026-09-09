@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <title>牛来，妈妈。 — GPT‑6 × Blender</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="./style.css" />
+  <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+</head>
+<body>
+  <main>
+    <header>
+      <a class="wordmark" href="./">小题大做<span> / 001</span></a>
+      <span class="credit"><span class="dot"></span> GPT‑6 × Blender</span>
+      <a class="source-link" href="../reference/movie-excerpt.mp4" target="_blank" rel="noreferrer">原片参考 ↗</a>
+    </header>
+    <section class="stage" aria-label="可旋转的牛来 3D 场景">
+      <canvas id="scene"></canvas>
+      <div class="loading" id="loading"><span class="loader"></span><p>牛来正在赶来的路上…</p></div>
+      <div class="scene-label"><span class="dot"></span><span id="modeLabel">导演视角</span></div>
+      <div class="title"><p>一个很严肃的亲子对话。</p><h1>牛来，<br><em>妈妈。</em></h1></div>
+      <div class="subtitle" id="subtitle" aria-live="off"><strong>妈妈——！</strong><span>MAMA!</span></div>
+      <div class="hint" id="hint">拖动画面，看看牛的背后。</div>
+      <div class="transport">
+        <button id="play" class="round" disabled aria-label="播放动画">▶</button>
+        <input id="timeline" type="range" min="0" max="13.99" step="0.01" value="0" aria-label="动画进度" />
+        <span id="time">00:00 / 00:14</span>
+        <button id="sound" class="round" aria-label="开启原片声音" title="开启原片声音">♪</button>
+      </div>
+      <div class="start-overlay" id="startOverlay" hidden><button id="start"><span>▶</span> 开始，声音开大一点</button></div>
+    </section>
+    <footer>
+      <div class="footer-copy"><span class="eyebrow">THE MEME, IN THREE DIMENSIONS.</span><p>你以为只是个视频。试着转一下镜头。</p></div>
+      <div class="actions">
+        <button id="mama" class="primary" disabled>再喊一声「妈妈」 <span>↗</span></button>
+        <button id="camera" class="secondary" disabled>自由视角</button>
+        <button id="reset" class="secondary" disabled>重播</button>
+      </div>
+    </footer>
+    <div class="notes"><span>原梗：《牛来》 · 原片音轨节选</span><span>Blender 建模与动画 · 浏览器模型预览</span></div>
+  </main>
+  <audio id="dialogue" src="./assets/dialogue.m4a" preload="auto"></audio>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

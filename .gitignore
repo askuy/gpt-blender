@@ -1,0 +1,13 @@
+renders/
+output/*.blend1
+output/reference-intro.mp4
+output/render-silent.mp4
+output/recreation-raw.mp4
+output/recreation-audio.m4a
+__pycache__/
+node_modules/
+.cache/
+.DS_Store
+*.pyc
+output/verification.json
+output/media-verification.json

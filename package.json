@@ -1,0 +1,20 @@
+{
+  "name": "niulai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The Niu Lai meme rebuilt as an editable 3D scene with GPT-6 and Blender.",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "dev": "python3 src/serve.py",
+    "scene": "node src/run_blender.mjs",
+    "render": "node src/run_blender.mjs --render",
+    "video": "python3 src/compose_video.py",
+    "reference": "python3 src/prepare_reference.py",
+    "test": "node src/verify.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "sharp": "0.35.4"
+  }
+}
