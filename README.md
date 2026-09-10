@@ -33,11 +33,12 @@ The demo follows the same **Blender Python → Eevee render inspection → anima
 npm run dev                          # Open http://127.0.0.1:8080/pelican/
 npm run pelican:scene -- --preview   # Rebuild .blend, GLB and four inspection renders
 npm run test:pelican
+npm run pelican:video                # Render an 8-second 1080×1080 MP4 in Blender
 ```
 
 Drag to orbit, scroll to zoom, choose three cameras, adjust 0.5–2× speed, pause, auto-orbit, ring the bell or save a PNG. Space pauses; B rings the bell. Reduced-motion visitors start paused. All assets are local, and interaction makes no further network requests after loading; Web Audio synthesizes the bell on demand.
 
-Sources: [build script](src/build_pelican.py), [editable Blender scene](output/pelican/pelican.blend), [animated GLB](web/pelican/assets/pelican.glb), [viewer](web/pelican/). This is an original procedural scene with no external models, image textures or recordings. The GLB contains baked object-transform animation; the editable scene retains individual parts, with static meshes batched by material and parent only for export.
+Sources: [build script](src/build_pelican.py), [editable Blender scene](output/pelican/pelican.blend), [animated GLB](web/pelican/assets/pelican.glb), [eight-second Blender film](output/pelican/pelican-ride.mp4), [Blender video renderer](src/render_pelican_video.py), [render command](src/render_pelican.mjs), [viewer](web/pelican/). The film renders the editable scene directly in Blender with a moving perspective camera; the browser viewer remains a four-second interactive loop. This is an original procedural scene with no external models, image textures or recordings. The GLB contains baked object-transform animation; the editable scene retains individual parts, with static meshes batched by material and parent only for export.
 
 Verification accepts the same `CHROME_BIN` and `PREVIEW_URL` variables as the other demos. It checks foot/pedal contact across the full cycle, the 2:1 gear ratio, frozen scenery and scarf while paused, actual playback speed, cameras and zoom, bell, PNG download, phone/tablet layouts, failed-model recovery and reduced motion. Reports go to `output/pelican/verification.json`; screenshots go to `renders/pelican/`.
 

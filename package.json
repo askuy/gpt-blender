@@ -15,6 +15,7 @@
     "pelican:scene": "node src/run_blender.mjs --pelican",
     "duo:scene": "node src/run_blender.mjs --duo",
     "duo:video": "node src/render_duo.mjs",
+    "pelican:video": "node src/render_pelican.mjs",
     "test:duo": "node src/verify_duo.mjs",
     "render": "node src/run_blender.mjs --render",
     "video": "python3 src/compose_video.py",

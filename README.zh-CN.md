@@ -33,11 +33,12 @@ npm run duo:video                  # 导出 12 秒、1080×1080 的 MP4
 npm run dev                          # 打开 http://127.0.0.1:8080/pelican/
 npm run pelican:scene -- --preview   # 重建 Blender 工程、GLB 与四张检查图
 npm run test:pelican                 # 验证整圈踩踏、动画和网页交互
+npm run pelican:video                # 用 Blender 导出 8 秒、1080×1080 的 MP4
 ```
 
 可拖动旋转、滚轮缩放、切换三个镜头、调整 0.5–2 倍速、暂停、自动环绕、打铃和保存 PNG。空格暂停，B 键打铃；设置「减少动态效果」时默认静止。首次加载之后交互不再请求网络，车铃由浏览器本地合成。
 
-构建脚本：[src/build_pelican.py](src/build_pelican.py)；可编辑工程：[output/pelican/pelican.blend](output/pelican/pelican.blend)；动画模型：[web/pelican/assets/pelican.glb](web/pelican/assets/pelican.glb)；网页：[web/pelican/](web/pelican/)。这是原创程序化场景，没有使用外部模型、图片纹理或音频。GLB 使用烘焙的对象变换动画，源工程保留独立部件，导出时按材质和父级合并静态网格。
+构建脚本：[src/build_pelican.py](src/build_pelican.py)；可编辑工程：[output/pelican/pelican.blend](output/pelican/pelican.blend)；动画模型：[web/pelican/assets/pelican.glb](web/pelican/assets/pelican.glb)；[8 秒 Blender 演示视频](output/pelican/pelican-ride.mp4)；[Blender 视频脚本](src/render_pelican_video.py)；[渲染命令](src/render_pelican.mjs)；网页：[web/pelican/](web/pelican/)。视频直接从可编辑 Blender 工程渲染，使用移动的透视镜头突出三维层次；网页交互仍保持四秒循环。这是原创程序化场景，没有使用外部模型、图片纹理或音频。GLB 使用烘焙的对象变换动画，源工程保留独立部件，导出时按材质和父级合并静态网格。
 
 检查程序使用与其他 Demo 相同的 `CHROME_BIN` 和 `PREVIEW_URL` 环境变量，覆盖脚与踏板在整圈中的接触、2:1 齿比、暂停冻结路面与围巾、真实调速、镜头与缩放、车铃、PNG、手机与平板布局、资源失败提示和减少动态效果。报告在 `output/pelican/verification.json`，截图在 `renders/pelican/`。
 
