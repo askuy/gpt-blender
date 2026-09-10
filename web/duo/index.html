@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f5f4f7" />
+  <meta name="description" content="Apple Duo foldable concept. Orbit the silver device, unfold it by hand and reveal the portrait within." />
+  <title>Apple Duo · Unfold the surprise.</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="./style.css" />
+  <script type="importmap">{"imports":{"three":"../vendor/three.module.js"}}</script>
+</head>
+<body>
+  <header class="site-header">
+    <a href="../" class="wordmark">The Making Room<span>Small ideas, big detail / 004</span></a>
+    <a class="product-name" href="./"><svg viewBox="0 0 24 28" aria-hidden="true"><path d="M16.2 4.6c1.2-1.5 1.1-3.1 1.1-3.6-1.8.1-3.5 1.3-4.4 2.4-1 1.1-1.7 2.7-1.5 4.2 1.8.1 3.6-1 4.8-3ZM20.6 15c0-3.3 2.7-4.9 2.8-5-1.5-2.2-3.8-2.5-4.6-2.5-2-.2-3.9 1.2-4.9 1.2-1 0-2.6-1.2-4.2-1.2-2.1 0-4.1 1.2-5.2 3-2.2 3.7-.6 9.3 1.5 12.3 1 1.5 2.2 3.1 3.8 3 1.5-.1 2.1-1 4-1 1.9 0 2.5 1 4.2.9 1.7 0 2.7-1.5 3.7-3 1.2-1.7 1.7-3.4 1.7-3.5-.1 0-2.8-1.1-2.8-4.2Z"/></svg>Apple Duo</a>
+    <span class="edition"><i></i> Interactive concept</span>
+  </header>
+  <main>
+    <section class="hero" aria-label="Apple Duo 3D foldable phone">
+      <div class="intro">
+        <p class="eyebrow"><span></span> Two forms, one reveal</p>
+        <h1>Closed, imagine.<br>Open, <em>feel it.</em></h1>
+        <p class="intro-copy">The surprise is on the other side.<br>Open gently. Let the view expand.</p>
+        <button id="reveal" class="reveal-button" disabled><span>Unfold surprise</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+        <div class="finish"><span class="swatch"></span><div>Silver<small>Brushed metal · soft sheen</small></div></div>
+      </div>
+      <div class="viewer" id="viewer">
+        <div class="backdrop-word" aria-hidden="true">duo</div>
+        <div class="halo" aria-hidden="true"></div>
+        <canvas id="scene" aria-label="Rotatable foldable phone model, drag to orbit, scroll to zoom"></canvas>
+        <div class="loading" id="loading" role="status"><div class="loading-icon"></div><span id="loadingText">Preparing your surprise…</span></div>
+        <div class="view-top"><span><i></i><b id="stateLabel">Ready to unfold</b></span><button id="capture" title="Save image" aria-label="Save image" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l1.5-2h5L16 5h4v15H4V5h4Z"/><circle cx="12" cy="12" r="4"/></svg></button></div>
+        <div class="view-bottom"><span>Drag to orbit<span class="hint-separator"> / </span>Scroll to zoom</span><div class="view-options" role="group" aria-label="View angle"><button data-view="hero" class="selected" aria-pressed="true" disabled>Hero</button><button data-view="front" aria-pressed="false" disabled>Front</button><button data-view="back" aria-pressed="false" disabled>Back</button></div></div>
+      </div>
+    </section>
+    <section class="controls" aria-label="Fold controls">
+      <div class="play-section"><button class="play-button" id="play" aria-label="Pause demo" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path id="playIcon" d="M9 6v12M15 6v12"/></svg></button><div><strong>Between forms</strong><span id="playLabel">Auto demo</span></div></div>
+      <div class="fold-section"><div class="fold-label"><label for="fold">Choose your angle</label><output id="angle" for="fold">0°</output></div><input id="fold" type="range" min="0" max="180" step="0.1" value="0" aria-label="Open angle" disabled /><div class="range-ends"><button id="close" disabled><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="6" y="2" width="8" height="16" rx="2"/></svg>Close</button><button id="open" disabled>Open<svg viewBox="0 0 24 20" aria-hidden="true"><rect x="2" y="2" width="20" height="16" rx="2"/><path d="M12 2v16"/></svg></button></div></div>
+      <div class="loop-section"><span class="mini-fold" aria-hidden="true">◫</span><p>From your palm,<br>to your whole view.</p><button id="reset" aria-label="Reset demo" title="Reset demo" disabled>↺</button></div>
+    </section>
+    <footer><p><span>004</span> Made for the moment it opens.</p><small>Apple Duo concept · Not an official product</small><a href="https://images.unsplash.com/photo-1534528741775-53994a69daeb" target="_blank" rel="noreferrer">Portrait source · Unsplash ↗</a></footer>
+  </main>
+  <div class="toast" id="toast" role="status" hidden></div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

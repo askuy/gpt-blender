@@ -13,4 +13,5 @@ dist/
 output/verification.json
 output/media-verification.json
 output/saber/verification*.json
+output/pelican/verification*.json
 .idea

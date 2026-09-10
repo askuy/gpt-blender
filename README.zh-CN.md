@@ -1,6 +1,8 @@
-# 牛来，妈妈。GPT‑6 × Blender
+# gpt-blender
 
 [English](README.md)
+
+使用 GPT 与 Blender 制作的可编辑 3D 场景和交互式网页作品集，包含牛来、Saber 数字手办和鹈鹕骑行等作品。
 
 **把《牛来》的“妈妈！牛来！”做成真正可编辑、可转动镜头的 3D 场景。** 小牛大喊，牛妈妈回头回应，镜头再拉远绕行，露出同一场景里的两头牛和蛇。
 
@@ -10,7 +12,44 @@ GPT‑6 / Codex 编写并修改 Blender Python 脚本，Blender 负责生成几�
 
 [Blender 源文件](output/niulai.blend) · [带动画的 GLB](web/assets/niulai.glb) · [GitHub Pages 部署](deploy/README.md)
 
-## 新 Demo：Saber 数字手办
+## 新 Demo：Apple Duo · 展开，心动
+
+银色折叠手机从合起到展开，内屏逐渐露出一张完整人像。双侧铰链、金属边框、后摄镜头、外屏和按钮均由 Blender 建模，浏览器播放导出的真实对象动画。外观是概念设计，未依据官方尺寸复刻。
+
+![Apple Duo 合起、折叠中和展开的 Blender 渲染](output/duo/contact-sheet.jpg)
+
+```sh
+npm run dev                       # 打开 http://127.0.0.1:8080/duo/
+npm run duo:scene -- --preview     # 重建 Blender、GLB 和三张渲染检查图
+npm run test:duo                   # 验证铰链、开合循环、交互及手机布局
+npm run duo:video                  # 导出 12 秒、1080×1080 的 MP4
+```
+
+支持自动循环、0–180° 手动开合、拖动旋转、正背面视角和保存 PNG。设置「减少动态效果」时默认保持展开。人像来自 Unsplash，已保存在项目内并打包进模型，加载完成后交互不需要外部网络。
+
+[Blender 工程](output/duo/duo.blend) · [动画 GLB](web/duo/assets/duo.glb) · [12 秒演示视频](output/duo/duo-reveal.mp4) · [建模脚本](src/build_duo.py)。工程时间轴是 30 fps 的 1–121 帧，记录合起到展开；网页将其编排为 12 秒往返循环。视频由浏览器渲染同一 GLB，再通过 FFmpeg 编码；外屏时钟界面由网页绘制。
+
+## 新 Demo：鹈鹕骑行俱乐部
+
+**今天，慢慢骑。** 一只系着珊瑚色围巾的奶白鹈鹕，骑薄荷绿自行车，在海边小景里兜风。长嘴、喉囊、羽毛、脚蹼、辐条、挡泥板、链条和车铃均为真实几何体。
+
+![鹈鹕骑行的三维场景与不同视角](output/pelican/contact-sheet.jpg)
+
+沿用 **Blender Python 建模与动画 → Eevee 渲染检查 → GLB → Three.js** 流程。四秒循环中，双腿通过解析式双段求解跟随踏板，脚蹼与踏板保持水平，车轮以曲柄两倍的角速度转动。头部轻轻摇动，围巾随风摆动；网页路面标线按轮胎滚动速度后退。
+
+```sh
+npm run dev                          # 打开 http://127.0.0.1:8080/pelican/
+npm run pelican:scene -- --preview   # 重建 Blender 工程、GLB 与四张检查图
+npm run test:pelican                 # 验证整圈踩踏、动画和网页交互
+```
+
+可拖动旋转、滚轮缩放、切换三个镜头、调整 0.5–2 倍速、暂停、自动环绕、打铃和保存 PNG。空格暂停，B 键打铃；设置「减少动态效果」时默认静止。首次加载之后交互不再请求网络，车铃由浏览器本地合成。
+
+构建脚本：[src/build_pelican.py](src/build_pelican.py)；可编辑工程：[output/pelican/pelican.blend](output/pelican/pelican.blend)；动画模型：[web/pelican/assets/pelican.glb](web/pelican/assets/pelican.glb)；网页：[web/pelican/](web/pelican/)。这是原创程序化场景，没有使用外部模型、图片纹理或音频。GLB 使用烘焙的对象变换动画，源工程保留独立部件，导出时按材质和父级合并静态网格。
+
+检查程序使用与其他 Demo 相同的 `CHROME_BIN` 和 `PREVIEW_URL` 环境变量，覆盖脚与踏板在整圈中的接触、2:1 齿比、暂停冻结路面与围巾、真实调速、镜头与缩放、车铃、PNG、手机与平板布局、资源失败提示和减少动态效果。报告在 `output/pelican/verification.json`，截图在 `renders/pelican/`。
+
+## Saber 数字手办
 
 **[打开 Saber 展柜](https://askuy.github.io/niulai-site/saber/)**。以《Fate/stay night》的 Saber 为灵感，制作了可从正面、侧面、背面观看的风格化三维手办：金色发束与编发、蓝裙、银色盔甲、Excalibur 和展示底座都有实际几何体。
 
@@ -44,8 +83,8 @@ npm run test:saber                   # 验证模型、骨骼、表情和网页�
 网站是纯静态页面，模型、音轨和前端库都在 `web/` 中，不调用 AI API。开发机使用 **Node.js 22+** 启动本地预览；访问者只需支持 WebGL 的浏览器，线上无需运行后端服务。
 
 ```sh
-git clone git@github.com:askuy/niulai.git
-cd niulai
+git clone git@github.com:askuy/niulai.git gpt-blender
+cd gpt-blender
 npm ci
 npm run dev
 ```

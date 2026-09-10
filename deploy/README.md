@@ -1,6 +1,6 @@
 # 发布到 GitHub Pages
 
-网站是完整的静态页面，发布目录为 `web/`。模型、音轨和 Three.js 都在这个目录中，动画由访问者的浏览器运行。线上不需要 Go、Python、Node.js 或数据库。
+`gpt-blender` 的网站是完整的静态页面，发布目录为 `web/`。模型、音轨和 Three.js 都在这个目录中，动画由访问者的浏览器运行。线上不需要 Go、Python、Node.js 或数据库。
 
 ## 发布结构
 

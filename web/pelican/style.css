@@ -1,0 +1,112 @@
+:root {
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #293f37;
+  background: #f5f2e9;
+  font-synthesis: none;
+  --green: #427665;
+  --line: #deded2;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+button, input { font: inherit; }
+button, a, input { -webkit-tap-highlight-color: transparent; }
+button, a { touch-action: manipulation; }
+button { border: 0; background: none; color: inherit; cursor: pointer; }
+button:disabled, input:disabled { opacity: .4; cursor: wait; }
+button:focus-visible, a:focus-visible, input:focus-visible, canvas:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 5px;
+}
+a { color: inherit; text-decoration: none; }
+svg {
+  width: 24px; height: 24px; fill: none; stroke: currentColor;
+  stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0;
+}
+.icon-library { position: absolute; width: 0; height: 0; overflow: hidden; }
+[hidden] { display: none !important; }
+.site-header {
+  height: 80px; max-width: 1600px; margin: auto; padding: 0 5%;
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  border-bottom: 1px solid var(--line);
+}
+.brand { display: flex; align-items: center; gap: 11px; width: fit-content; font-size: 14px; font-weight: 600; }
+.brand-icon {
+  display: grid; place-items: center; width: 38px; height: 38px;
+  border: 1px solid #829887; border-radius: 50%; transform: rotate(-9deg);
+}
+.brand-icon svg { width: 25px; height: 25px; }
+h1 { margin: 0; font-size: 21px; font-weight: 500; letter-spacing: -.6px; }
+.gallery-link { justify-self: end; font-size: 12px; color: #70816c; }
+.gallery-link:hover { color: var(--green); }
+main { max-width: 1440px; margin: auto; padding-bottom: 24px; }
+.exhibit { height: clamp(400px, calc(100svh - 196px), 760px); position: relative; overflow: hidden; }
+.scene-wrap { position: absolute; inset: 0 0 58px; }
+#scene { display: block; width: 100%; height: 100%; outline-offset: -5px; touch-action: none; }
+.loading {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  flex-direction: column; background: #f5f2e9ed; z-index: 4; font-size: 12px; color: #748774; gap: 12px;
+}
+.loading-bike { display: grid; place-items: center; background: #e8edde; width: 64px; height: 64px; border-radius: 50%; }
+.loading-bike svg { width: 35px; height: 35px; animation: breathe 2s ease-in-out infinite; }
+.loading p { margin: 5px 0; }
+.load-track { height: 2px; width: 130px; background: #dedfd3; }
+.load-track i { display: block; width: 5%; height: 100%; background: var(--green); transition: width .2s; }
+.loading button { padding: 9px 17px; border: 1px solid #a9b59f; border-radius: 5px; }
+.view-control {
+  position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+  display: flex; padding: 4px; border: 1px solid #e2e2d5; background: #faf9f0;
+  border-radius: 24px; white-space: nowrap;
+}
+.view-control button { font-size: 12px; padding: 9px 20px; border-radius: 18px; transition: background .2s; }
+.view-control button.selected { color: #42634c; background: #e7ecdd; }
+.ride-controls {
+  max-width: 520px; margin: 18px auto 0; padding: 13px 16px;
+  display: flex; align-items: center; gap: 22px;
+  border: 1px solid #dce0d2; border-radius: 16px; background: #faf9f0;
+}
+.play-button {
+  background: #3e715d; color: #fcf9e8; width: 43px; height: 43px; flex-shrink: 0;
+  border-radius: 50%; display: grid; place-items: center; transition: background .2s;
+}
+.play-button:hover { background: #305f4d; }
+.play-button svg { width: 21px; height: 21px; stroke-width: 2.5; }
+.speed-control { flex: 1; min-width: 70px; }
+.speed-control label { display: flex; justify-content: space-between; font-size: 11px; color: #7d8975; }
+.speed-control output { font-variant-numeric: tabular-nums; color: #51705c; }
+.speed-control input { display: block; width: 100%; margin: 6px 0 0; height: 18px; cursor: pointer; accent-color: #638468; }
+.action-controls { display: flex; gap: 4px; align-items: center; }
+.icon-button { width: 34px; height: 38px; border-radius: 7px; display: grid; place-items: center; color: #7c8b74; }
+.icon-button:hover, .icon-button[aria-pressed=true] { color: #386247; background: #e9eedd; }
+.icon-button svg { width: 19px; height: 19px; }
+#toast {
+  position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+  padding: 12px 22px; background: #304d40ed; color: #f5f3e5; border-radius: 24px;
+  font-size: 12px; z-index: 10; max-width: 90%; text-align: center;
+}
+.no-script { text-align: center; padding: 25px; font-size: 13px; }
+@keyframes breathe { 50% { transform: translateY(-4px) rotate(-4deg); } }
+@media (max-width: 640px) {
+  .site-header { height: 66px; padding: 0 6%; }
+  .brand > span:last-child { display: none; }
+  .brand-icon { width: 33px; height: 33px; }
+  .brand-icon svg { width: 23px; height: 23px; }
+  h1 { font-size: 20px; }
+  .gallery-link { font-size: 11px; }
+  .exhibit { height: clamp(340px, calc(100svh - 195px), 540px); }
+  .scene-wrap { bottom: 56px; }
+  .view-control button { padding: 8px 19px; font-size: 11px; }
+  .ride-controls { margin: 16px 5% 0; padding: 12px; gap: 12px; border-radius: 14px; }
+  .play-button { width: 37px; height: 37px; }
+  .speed-control { min-width: 50px; }
+  .speed-control label { font-size: 10px; }
+  .action-controls { gap: 0; }
+  .icon-button { width: 29px; height: 36px; }
+  .icon-button svg { width: 17px; height: 17px; }
+}
+@media (max-width: 370px) {
+  .ride-controls { gap: 8px; padding: 10px; }
+  .icon-button { width: 26px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

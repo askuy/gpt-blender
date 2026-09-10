@@ -28,6 +28,20 @@ GPT‑6 / Codex authored and revised the scripts through multiple iterations and
 - `output/saber/contact-sheet.jpg` contains renders of this Blender scene. The viewer's studio environment, shadow texture and gold particles are generated locally in code. No AI-generated raster illustration is included in the delivered assets.
 - The demo follows the repository's script, render, inspect and revise workflow. It is a stylized procedural interpretation, not a scan or a production character asset.
 
+## Pelican cycling club
+
+- Original stylized character and coastal diorama, constructed procedurally by `src/build_pelican.py` using Blender. No external meshes, photographs, image textures, animation clips or audio recordings are used.
+- `output/pelican/pelican.blend` retains the editable model and four-second animation. `web/pelican/assets/pelican.glb` contains baked object-transform tracks and static meshes batched by material and parent. Both legs use analytic two-link positioning; level webbed feet follow opposite pedals and the wheels retain a 2:1 gear ratio.
+- The inspection views and `output/pelican/contact-sheet.jpg` are renders of this scene. The browser contact shadow and moving lane markings are generated locally in code. The bicycle bell uses Web Audio oscillators, triggered by user interaction.
+- The viewer reuses the repository's vendored Three.js, OrbitControls and GLTFLoader. There are no AI API calls or backend services.
+
+## Apple Duo foldable concept
+
+- `src/build_duo.py` constructs the silver enclosure, beveled edges, cameras, Apple-shaped emblem, cover display, ports and two animated hinges in Blender 4.5 LTS. This is a visual concept with invented dimensions, not a verified reconstruction of an announced Apple product. Apple names and marks belong to their owner.
+- `web/duo/assets/portrait.jpg` is a locally stored Unsplash photograph, downloaded from https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=1600&h=1200&q=90&fit=crop&crop=faces . Source service license: https://unsplash.com/license . The photograph is mapped continuously across the two inner display meshes and packed into the Blender file and GLB. It is not AI-generated; the attempted built-in image generation returned no usable file.
+- `output/duo/duo.blend` keeps editable parts and 121 frames at 30 fps, from closed to open. `web/duo/assets/duo.glb` contains the geometry, packed photo and sampled object animations. The browser scrubs those Blender tracks, adds studio reflections and generates its outer lock-screen interface locally with canvas.
+- `output/duo/duo-reveal.mp4` is a deterministic 12-second browser render of the Blender GLB, encoded with FFmpeg by `src/render_duo.mjs`. `output/duo/contact-sheet.jpg` shows the closed, half-open and open Blender renders. Browser interactions make no external API calls.
+
 ## Third-party software
 
 - **Three.js 0.180.0**: local browser rendering library and its GLTF loader, OrbitControls and BufferGeometryUtils. MIT license: [`web/vendor/THREE-LICENSE.txt`](web/vendor/THREE-LICENSE.txt). Upstream: https://github.com/mrdoob/three.js/tree/r180

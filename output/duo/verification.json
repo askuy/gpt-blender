@@ -1,0 +1,49 @@
+{
+  "passed": true,
+  "checks": [
+    "Blender geometry",
+    "two real hinges",
+    "180 degree open",
+    "close after endpoint",
+    "manual 90 degree pose",
+    "pause",
+    "resume",
+    "camera drag",
+    "back view and cover display",
+    "PNG download",
+    "mobile controls",
+    "local assets only",
+    "reduced motion",
+    "full autoplay cycle",
+    "no browser errors"
+  ],
+  "geometry": {
+    "ready": true,
+    "playing": false,
+    "fold": 0,
+    "elapsed": 0.06660000000000002,
+    "view": "hero",
+    "camera": [
+      0.7999999999999997,
+      2.9000000000000004,
+      12.599999999999996
+    ],
+    "hinges": [
+      [
+        -1.1524527998574285e-9,
+        0.7071068286895752,
+        -1.7286794218307477e-9,
+        0.7071067094802856
+      ],
+      [
+        -1.6463602703353786e-10,
+        -0.7071068286895752,
+        1.2347709521520756e-9,
+        0.7071067094802856
+      ]
+    ],
+    "meshes": 54,
+    "triangles": 21230,
+    "clips": 3
+  }
+}

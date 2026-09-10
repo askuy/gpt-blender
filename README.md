@@ -1,6 +1,8 @@
-# Niu Lai — GPT‑6 × Blender
+# gpt-blender
 
 [简体中文](README.zh-CN.md)
+
+A collection of editable 3D scenes and interactive browser demos created with GPT and Blender, including Niu Lai, Saber and a cycling pelican.
 
 **A Chinese movie meme, rebuilt as an editable 3D scene.** A calf screams “Mama!”, his mother turns and answers “Niu Lai!”, and the camera pulls back to reveal both characters and a snake in the same scene.
 
@@ -10,7 +12,44 @@ GPT‑6 / Codex wrote and revised the Blender Python scripts. Blender generated 
 
 [Blender scene](output/niulai.blend) · [Animated GLB](web/assets/niulai.glb) · [GitHub Pages deployment](deploy/README.md)
 
-## New demo: Saber digital figure
+## New demo: Apple Duo — unfold the surprise
+
+A silver folding phone opens to reveal a continuous portrait across its inner display. Blender constructs the two hinges, machined enclosure, cameras, outer screen and buttons; the browser scrubs the exported object animations. This is a visual concept with invented dimensions.
+
+![Apple Duo closed, half-open and open Blender renders](output/duo/contact-sheet.jpg)
+
+```sh
+npm run dev                       # Open http://127.0.0.1:8080/duo/
+npm run duo:scene -- --preview     # Rebuild Blender, GLB and three inspection renders
+npm run test:duo                   # Verify actual hinges, interactions and mobile layout
+npm run duo:video                  # Render a 12-second 1080×1080 MP4
+```
+
+The viewer supports a looping reveal, a 0–180° slider, camera orbit, front/back views and PNG downloads. Reduced-motion users start with a still, open device. The Unsplash portrait is stored locally and packed into the model. All interaction runs locally after loading.
+
+[Editable Blender scene](output/duo/duo.blend) · [Animated GLB](web/duo/assets/duo.glb) · [12-second film](output/duo/duo-reveal.mp4) · [Build script](src/build_duo.py). Frames 1–121 at 30 fps define closed-to-open motion; the browser arranges it into a 12-second round trip. The film captures that GLB in the browser studio and encodes it with FFmpeg. The browser also draws the outer lock-screen interface.
+
+## New demo: Pelican cycling club
+
+**Take the scenic route.** An ivory pelican in a coral scarf pedals a mint-green bicycle through a miniature coastal scene. Its long bill, throat pouch, layered feathers, webbed feet, spokes, fenders, chain and bell are actual geometry.
+
+![Pelican cycling scene and inspection views](output/pelican/contact-sheet.jpg)
+
+The demo follows the same **Blender Python → Eevee render inspection → animated GLB → Three.js** workflow. Analytic two-link legs follow opposite pedals through a seamless four-second loop. Feet and pedals remain level, the wheels turn at twice the crank's angular speed, and the head and scarf move gently. Browser lane markings pass beneath the bike at the tire's rolling speed.
+
+```sh
+npm run dev                          # Open http://127.0.0.1:8080/pelican/
+npm run pelican:scene -- --preview   # Rebuild .blend, GLB and four inspection renders
+npm run test:pelican
+```
+
+Drag to orbit, scroll to zoom, choose three cameras, adjust 0.5–2× speed, pause, auto-orbit, ring the bell or save a PNG. Space pauses; B rings the bell. Reduced-motion visitors start paused. All assets are local, and interaction makes no further network requests after loading; Web Audio synthesizes the bell on demand.
+
+Sources: [build script](src/build_pelican.py), [editable Blender scene](output/pelican/pelican.blend), [animated GLB](web/pelican/assets/pelican.glb), [viewer](web/pelican/). This is an original procedural scene with no external models, image textures or recordings. The GLB contains baked object-transform animation; the editable scene retains individual parts, with static meshes batched by material and parent only for export.
+
+Verification accepts the same `CHROME_BIN` and `PREVIEW_URL` variables as the other demos. It checks foot/pedal contact across the full cycle, the 2:1 gear ratio, frozen scenery and scarf while paused, actual playback speed, cameras and zoom, bell, PNG download, phone/tablet layouts, failed-model recovery and reduced motion. Reports go to `output/pelican/verification.json`; screenshots go to `renders/pelican/`.
+
+## Saber digital figure
 
 **[Open the Saber exhibit](https://askuy.github.io/niulai-site/saber/)** — a stylized, fully three-dimensional fan figure inspired by Saber from *Fate/stay night*. Orbit the blonde hair and braid, blue dress, silver armor, Excalibur and engraved display base.
 
@@ -42,8 +81,8 @@ The GLB is approximately **8.4 MB uncompressed**, plus the shared Three.js and p
 The website is entirely static. Its model, audio and viewer libraries live in `web/`, with no AI API calls. Use **Node.js 22+** for local preview; visitors only need a browser with WebGL support. Hosting requires no backend runtime.
 
 ```sh
-git clone git@github.com:askuy/niulai.git
-cd niulai
+git clone git@github.com:askuy/niulai.git gpt-blender
+cd gpt-blender
 npm ci
 npm run dev
 ```
