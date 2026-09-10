@@ -11,15 +11,15 @@ let browser, server, siteDirectory;
 try {
 let base=process.env.PREVIEW_URL;
 if (!base) {
-// Match the /niulai-site/ subdirectory used by GitHub Pages.
+// Match the /gpt-blender-site/ subdirectory used by GitHub Pages.
 siteDirectory=await mkdtemp(join(tmpdir(),'niulai-pages-'));
-await cp(root+'web',join(siteDirectory,'niulai-site'),{recursive:true});
+await cp(root+'web',join(siteDirectory,'gpt-blender-site'),{recursive:true});
 server=httpServer.createServer({root:siteDirectory,cache:-1,showDir:false});
 await new Promise((resolve,reject)=>{
   server.server.once('error',reject);
   server.listen(0,'127.0.0.1',resolve);
 });
-base=`http://127.0.0.1:${server.server.address().port}/niulai-site/`;
+base=`http://127.0.0.1:${server.server.address().port}/gpt-blender-site/`;
 }
 for (const path of ['reference/movie-excerpt.mp4','output/niulai-twitter.mp4','package.json']) {
   const response=await fetch(new URL(path,base));

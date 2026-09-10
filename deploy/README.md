@@ -5,9 +5,9 @@
 ## 发布结构
 
 - 开发仓库：`askuy/niulai`，保持私有。
-- 网页发布仓库：`askuy/niulai-site`，公开且只保存 `web/` 的内容。
-- 访问地址：**https://askuy.github.io/niulai-site/**。
-- Saber 手办：**https://askuy.github.io/niulai-site/saber/**。
+- 网页发布仓库：`askuy/gpt-blender-site`，公开且只保存 `web/` 的内容。
+- 访问地址：**https://askuy.github.io/gpt-blender-site/**。
+- Saber 手办：**https://askuy.github.io/gpt-blender-site/saber/**。
 
 当前账号套餐不支持从私有仓库启用 Pages，因此使用独立的公开网页仓库免费托管。发布仓库在 **Settings → Pages** 中选择 **Deploy from a branch → main → /(root)**。推送网页资源后，GitHub 自动构建并发布。
 
@@ -22,7 +22,7 @@ npm run publish:pages
 
 发布脚本在临时目录中克隆公开网页仓库，用当前 `web/` 替换发布文件，提交并推送 `main`。需要已有的 SSH 推送权限。脚本不会把开发仓库的历史、离线脚本、MP4 或 Blender 工程复制到公开仓库。`--dry-run` 只检查待发布差异，不推送。
 
-页面使用相对路径，兼容 `/niulai-site/` 子目录；`.nojekyll` 用于跳过 Jekyll。更新后在发布仓库的 Actions 中检查 Pages 状态，再运行下文的线上验证。
+页面使用相对路径，兼容 `/gpt-blender-site/` 子目录；`.nojekyll` 用于跳过 Jekyll。更新后在发布仓库的 Actions 中检查 Pages 状态，再运行下文的线上验证。
 
 ## 本地预览
 
@@ -50,8 +50,8 @@ npm run test:saber
 验证线上站点：
 
 ```sh
-PREVIEW_URL=https://askuy.github.io/niulai-site/ npm test
-PREVIEW_URL=https://askuy.github.io/niulai-site/ npm run test:saber
+PREVIEW_URL=https://askuy.github.io/gpt-blender-site/ npm test
+PREVIEW_URL=https://askuy.github.io/gpt-blender-site/ npm run test:saber
 ```
 
 已有浏览器可通过 `CHROME_BIN=/path/to/chrome` 指定。报告写入 `output/verification.json`，截图写入 `renders/`。

@@ -7,8 +7,8 @@ import { promisify } from 'node:util';
 
 const execute = promisify(execFile);
 const root = fileURLToPath(new URL('../', import.meta.url));
-const repository = 'askuy/niulai-site';
-const siteURL = 'https://askuy.github.io/niulai-site/';
+const repository = 'askuy/gpt-blender-site';
+const siteURL = 'https://askuy.github.io/gpt-blender-site/';
 const dryRun = process.argv.includes('--dry-run');
 
 async function validate(directory) {

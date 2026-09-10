@@ -18,13 +18,13 @@ try {
   let base = process.env.PREVIEW_URL;
   if (!base) {
     directory = await mkdtemp(join(tmpdir(), 'pelican-pages-'));
-    await cp(join(root, 'web'), join(directory, 'niulai-site'), { recursive: true });
+    await cp(join(root, 'web'), join(directory, 'gpt-blender-site'), { recursive: true });
     server = httpServer.createServer({ root: directory, cache: -1, showDir: false });
     await new Promise((resolve, reject) => {
       server.server.once('error', reject);
       server.listen(0, '127.0.0.1', resolve);
     });
-    base = `http://127.0.0.1:${server.server.address().port}/niulai-site/`;
+    base = `http://127.0.0.1:${server.server.address().port}/gpt-blender-site/`;
   }
   const url = new URL('pelican/', base).href;
   browser = await chromium.launch({ headless: true, ...(process.env.CHROME_BIN ? { executablePath: process.env.CHROME_BIN } : {}) });

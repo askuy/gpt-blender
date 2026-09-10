@@ -51,7 +51,7 @@ npm run test:pelican                 # 验证整圈踩踏、动画和网页交�
 
 ## Saber 数字手办
 
-**[打开 Saber 展柜](https://askuy.github.io/niulai-site/saber/)**。以《Fate/stay night》的 Saber 为灵感，制作了可从正面、侧面、背面观看的风格化三维手办：金色发束与编发、蓝裙、银色盔甲、Excalibur 和展示底座都有实际几何体。
+**[打开 Saber 展柜](https://askuy.github.io/gpt-blender-site/saber/)**。以《Fate/stay night》的 Saber 为灵感，制作了可从正面、侧面、背面观看的风格化三维手办：金色发束与编发、蓝裙、银色盔甲、Excalibur 和展示底座都有实际几何体。
 
 ![Saber 的正面、背面、抬剑与蓄力姿态](output/saber/contact-sheet.jpg)
 
@@ -98,7 +98,7 @@ npm run dev
 
 ## GitHub Pages
 
-网站发布在 **https://askuy.github.io/niulai-site/**。开发仓库保持私有，公开的 `askuy/niulai-site` 只保存 `web/` 中的网页、模型和音轨，通过免费 GitHub Pages 托管。
+网站发布在 **https://askuy.github.io/gpt-blender-site/**。开发仓库保持私有，公开的 `askuy/gpt-blender-site` 只保存 `web/` 中的网页、模型和音轨，通过免费 GitHub Pages 托管。
 
 运行 `npm run publish:pages` 可更新网站，需要 Git 的 SSH 推送权限。下文的 Python / Blender 工具仅用于离线重新制作模型和视频；发布过程无需后端运行环境。详情见 [部署说明](deploy/README.md)。
 
@@ -188,7 +188,7 @@ npm run test:saber
 
 检查程序会在空闲端口启动自己的本地服务器，结束后关闭。覆盖模型加载、音频播放与暂停、进度拖动、字幕、实际镜头旋转、重播和手机布局。
 
-已有浏览器可通过 `CHROME_BIN=/path/to/chrome npm test` 使用。检查程序会启动临时静态服务器，也可通过 `PREVIEW_URL=https://askuy.github.io/niulai-site/ npm test` 验证线上网页。截图写入 `renders/`，报告写入 `output/verification.json`。
+已有浏览器可通过 `CHROME_BIN=/path/to/chrome npm test` 使用。检查程序会启动临时静态服务器，也可通过 `PREVIEW_URL=https://askuy.github.io/gpt-blender-site/ npm test` 验证线上网页。截图写入 `renders/`，报告写入 `output/verification.json`。
 
 Saber 使用相同的环境变量，`PREVIEW_URL` 填站点根地址（程序会追加 `saber/`）。Saber 检查涵盖宝石导出尺寸、眨眼形态键、手部与剑的实际运动、暂停光效、动作结束回待机、镜头、灯光、白模、截图、手机布局和额外网络请求；报告写入 `output/saber/verification.json`。
 

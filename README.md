@@ -51,7 +51,7 @@ Verification accepts the same `CHROME_BIN` and `PREVIEW_URL` variables as the ot
 
 ## Saber digital figure
 
-**[Open the Saber exhibit](https://askuy.github.io/niulai-site/saber/)** — a stylized, fully three-dimensional fan figure inspired by Saber from *Fate/stay night*. Orbit the blonde hair and braid, blue dress, silver armor, Excalibur and engraved display base.
+**[Open the Saber exhibit](https://askuy.github.io/gpt-blender-site/saber/)** — a stylized, fully three-dimensional fan figure inspired by Saber from *Fate/stay night*. Orbit the blonde hair and braid, blue dress, silver armor, Excalibur and engraved display base.
 
 ![Saber front, rear, salute and raised-sword poses](output/saber/contact-sheet.jpg)
 
@@ -96,7 +96,7 @@ The default address is **http://127.0.0.1:8080/**; use the address printed in th
 
 ## GitHub Pages
 
-The site is hosted at **https://askuy.github.io/niulai-site/**. Development sources stay in this private repository; the public `askuy/niulai-site` repository contains only the viewer, model and dialogue audio from `web/` and uses free GitHub Pages hosting.
+The site is hosted at **https://askuy.github.io/gpt-blender-site/**. Development sources stay in this private repository; the public `askuy/gpt-blender-site` repository contains only the viewer, model and dialogue audio from `web/` and uses free GitHub Pages hosting.
 
 Run `npm run publish:pages` to update the website using Git over SSH. No backend runtime is needed. See [deployment instructions](deploy/README.md) for details. The Python / Blender tools below are only used for offline asset and video generation.
 
@@ -195,7 +195,7 @@ npm run test:saber
 
 The check starts its own local server on an available port and stops it afterward. It checks model loading, audio start/pause, timeline seeking, subtitles, actual camera movement, replay, director reset and mobile layout.
 
-You can use an existing browser with `CHROME_BIN=/path/to/chrome npm test`. The check starts a temporary static server; use `PREVIEW_URL=https://askuy.github.io/niulai-site/ npm test` to check the deployed viewer. Screenshots are written to `renders/`; the local report is `output/verification.json`.
+You can use an existing browser with `CHROME_BIN=/path/to/chrome npm test`. The check starts a temporary static server; use `PREVIEW_URL=https://askuy.github.io/gpt-blender-site/ npm test` to check the deployed viewer. Screenshots are written to `renders/`; the local report is `output/verification.json`.
 
 The Saber check uses the same environment variables. Give `PREVIEW_URL` the site root; it appends `saber/`. It checks exported jewel dimensions, blink shape keys, real hand and sword motion, frozen effects, return to idle, camera controls, materials, lighting, PNG download, mobile layout and extra network requests. Its report is `output/saber/verification.json`, with screenshots in `renders/saber/`.
 
