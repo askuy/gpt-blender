@@ -4,7 +4,7 @@
 
 A collection of editable 3D scenes and interactive browser demos created with GPT and Blender: Apple Duo, a cycling pelican, Saber and Niu Lai.
 
-## New demo: Apple Duo — unfold the surprise
+## Apple Duo — unfold the surprise
 
 A silver folding phone opens to reveal a continuous portrait across its inner display. Blender constructs the two hinges, machined enclosure, cameras, outer screen and buttons; the browser scrubs the exported object animations. This is a visual concept with invented dimensions.
 
@@ -21,7 +21,7 @@ The viewer supports a looping reveal, a 0–180° slider, camera orbit, front/ba
 
 [Editable Blender scene](output/duo/duo.blend) · [Animated GLB](web/duo/assets/duo.glb) · [12-second film](output/duo/duo-reveal.mp4) · [Build script](src/build_duo.py). Frames 1–121 at 30 fps define closed-to-open motion; the browser arranges it into a 12-second round trip. The film captures that GLB in the browser studio and encodes it with FFmpeg. The browser also draws the outer lock-screen interface.
 
-## New demo: Pelican cycling club
+## Pelican cycling club
 
 **Take the scenic route.** An ivory pelican in a coral scarf pedals a mint-green bicycle through a miniature coastal scene. Its long bill, throat pouch, layered feathers, webbed feet, spokes, fenders, chain and bell are actual geometry.
 
