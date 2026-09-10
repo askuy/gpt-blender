@@ -32,6 +32,7 @@ const page=await browser.newPage({viewport:{width:1440,height:1100},deviceScaleF
 page.on('pageerror',e=>errors.push(e.message));
 page.on('response',r=>{if(r.status()>=400)errors.push(`${r.status()} ${r.url()}`)});
 await page.goto(base);
+assert.equal(await page.locator('main > section').first().getAttribute('id'),'projects','Project cases must appear before the introduction');
 assert.equal(await page.locator('canvas').count(),0,'Homepage must not load the Niu Lai scene');
 assert.equal(await page.locator('.project-card').count(),4,'Homepage must show four projects');
 assert.deepEqual(await page.locator('.project-card h3').allInnerTexts(),['Apple Duo','Pelican Ride','Saber','Niu Lai']);
