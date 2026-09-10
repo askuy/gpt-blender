@@ -70,7 +70,7 @@ The GLB is approximately **8.4 MB uncompressed**, plus the shared Three.js and p
 
 ## Niu Lai — the original scene
 
-**A Chinese movie meme, rebuilt as an editable 3D scene.** A calf screams “Mama!”, his mother turns and answers “Niu Lai!”, and the camera pulls back to reveal both characters and a snake in the same scene.
+**[Open the Niu Lai exhibit](https://askuy.github.io/gpt-blender-site/niulai/)** — a Chinese movie meme rebuilt as an editable 3D scene. A calf screams “Mama!”, his mother turns and answers “Niu Lai!”, and the camera pulls back to reveal both characters and a snake in the same scene.
 
 GPT‑6 / Codex wrote and revised the Blender Python scripts. Blender generated the geometry and rendered the animation. You can watch the film, rotate the exported model in your browser, or edit the entire scene in Blender.
 
@@ -89,16 +89,16 @@ npm ci
 npm run dev
 ```
 
-The default address is **http://127.0.0.1:8080/**; use the address printed in the terminal if that port is occupied. Run `npm run dev -- -p 8767` to choose a port explicitly.
+The default address is **http://127.0.0.1:8080/**, which opens the English project index; use **http://127.0.0.1:8080/niulai/** for the Niu Lai exhibit. Use the address printed in the terminal if that port is occupied. Run `npm run dev -- -p 8767` to choose a port explicitly.
 
 - Press the start button to play with the original dialogue.
 - Drag to orbit the camera; scroll or pinch to zoom.
 - Scrub the timeline, replay “Mama!”, or return to the director's camera.
-- The preview interface is in Simplified Chinese; dialogue has English subtitles.
+- The project index defaults to English and can switch to Simplified Chinese. The Niu Lai exhibit uses a Chinese interface with English dialogue subtitles.
 
 ## GitHub Pages
 
-The site is hosted at **https://askuy.github.io/gpt-blender-site/**. Development sources stay in this private repository; the public `askuy/gpt-blender-site` repository contains only the viewer, model and dialogue audio from `web/` and uses free GitHub Pages hosting.
+The site is hosted at **https://askuy.github.io/gpt-blender-site/**, with the Niu Lai exhibit at **https://askuy.github.io/gpt-blender-site/niulai/**. Development sources stay in this private repository; the public `askuy/gpt-blender-site` repository contains only the viewer, model and dialogue audio from `web/` and uses free GitHub Pages hosting.
 
 Run `npm run publish:pages` to update the website using Git over SSH. No backend runtime is needed. See [deployment instructions](deploy/README.md) for details. The Python / Blender tools below are only used for offline asset and video generation.
 

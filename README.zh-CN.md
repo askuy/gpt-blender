@@ -72,7 +72,7 @@ npm run test:saber                   # 验证模型、骨骼、表情和网页�
 
 ## 牛来，妈妈。
 
-**把《牛来》的“妈妈！牛来！”做成真正可编辑、可转动镜头的 3D 场景。** 小牛大喊，牛妈妈回头回应，镜头再拉远绕行，露出同一场景里的两头牛和蛇。
+**[打开牛来三维展览](https://askuy.github.io/gpt-blender-site/niulai/)**，把《牛来》的“妈妈！牛来！”做成真正可编辑、可转动镜头的 3D 场景。小牛大喊，牛妈妈回头回应，镜头再拉远绕行，露出同一场景里的两头牛和蛇。
 
 GPT‑6 / Codex 编写并修改 Blender Python 脚本，Blender 负责生成几何体和渲染动画。仓库包含完整代码、可编辑模型、网页预览和成片。
 
@@ -91,16 +91,16 @@ npm ci
 npm run dev
 ```
 
-默认打开 **http://127.0.0.1:8080/**；端口占用时以终端输出的地址为准。也可以运行 `npm run dev -- -p 8767` 指定端口。
+默认打开 **http://127.0.0.1:8080/**，这里是英文项目首页；访问 **http://127.0.0.1:8080/niulai/** 可打开牛来展览。端口占用时以终端输出的地址为准。也可以运行 `npm run dev -- -p 8767` 指定端口。
 
 - 点击开始按钮，播放原片对白。
 - 拖动旋转镜头，滚轮或双指缩放。
 - 拖动进度条、重播“妈妈”，或切回导演视角。
-- 网页界面采用简体中文，对白配有英文字幕。
+- 项目首页默认使用英文，可切换为简体中文；牛来展览使用中文界面，对白配有英文字幕。
 
 ## GitHub Pages
 
-网站发布在 **https://askuy.github.io/gpt-blender-site/**。开发仓库保持私有，公开的 `askuy/gpt-blender-site` 只保存 `web/` 中的网页、模型和音轨，通过免费 GitHub Pages 托管。
+网站发布在 **https://askuy.github.io/gpt-blender-site/**，牛来展览位于 **https://askuy.github.io/gpt-blender-site/niulai/**。开发仓库保持私有，公开的 `askuy/gpt-blender-site` 只保存 `web/` 中的网页、模型和音轨，通过免费 GitHub Pages 托管。
 
 运行 `npm run publish:pages` 可更新网站，需要 Git 的 SSH 推送权限。下文的 Python / Blender 工具仅用于离线重新制作模型和视频；发布过程无需后端运行环境。详情见 [部署说明](deploy/README.md)。
 

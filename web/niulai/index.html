@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="description" content="牛来：一个可编辑、可旋转镜头的三维场景。" />
+  <title>牛来，妈妈。 — gpt-blender</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="./style.css" />
+  <script type="importmap">{"imports":{"three":"../vendor/three.module.js"}}</script>
+</head>
+<body>
+  <main>
+    <header>
+      <a class="wordmark" href="../">gpt-blender<span> / 004</span></a>
+      <span class="credit"><span class="dot"></span> GPT-6 × Blender</span>
+    </header>
+    <nav class="project-nav" aria-label="作品导航">
+      <a href="../duo/"><span>001</span>Apple Duo</a>
+      <a href="../pelican/"><span>002</span>鹈鹕骑行</a>
+      <a href="../saber/"><span>003</span>Saber</a>
+      <a href="./"><span>004</span>牛来</a>
+    </nav>
+    <section class="stage" aria-label="可旋转的牛来 3D 场景">
+      <canvas id="scene"></canvas>
+      <div class="loading" id="loading"><span class="loader"></span><p>牛来正在赶来的路上…</p></div>
+      <div class="scene-label"><span class="dot"></span><span id="modeLabel">导演视角</span></div>
+      <div class="title"><p>一个很严肃的亲子对话。</p><h1>牛来，<br><em>妈妈。</em></h1></div>
+      <div class="subtitle" id="subtitle" aria-live="off"><strong>妈妈——！</strong><span>MAMA!</span></div>
+      <div class="hint" id="hint">拖动画面，看看牛的背后。</div>
+      <div class="transport">
+        <button id="play" class="round" disabled aria-label="播放动画">▶</button>
+        <input id="timeline" type="range" min="0" max="13.99" step="0.01" value="0" aria-label="动画进度" />
+        <span id="time">00:00 / 00:14</span>
+        <button id="sound" class="round" aria-label="开启原片声音" title="开启原片声音">♪</button>
+      </div>
+      <div class="start-overlay" id="startOverlay" hidden><button id="start"><span>▶</span> 开始，声音开大一点</button></div>
+    </section>
+    <footer>
+      <div class="footer-copy"><span class="eyebrow">THE MEME, IN THREE DIMENSIONS.</span><p>你以为只是个视频。试着转一下镜头。</p></div>
+      <div class="actions">
+        <button id="mama" class="primary" disabled>再喊一声「妈妈」 <span>↗</span></button>
+        <button id="camera" class="secondary" disabled>自由视角</button>
+        <button id="reset" class="secondary" disabled>重播</button>
+      </div>
+    </footer>
+    <div class="notes"><span>原梗：《牛来》 · 原片音轨节选</span><span>Blender 建模与动画 · 浏览器模型预览</span><a class="source-link" href="https://github.com/askuy/gpt-blender" target="_blank" rel="noreferrer">开源代码 ↗</a></div>
+    <a class="next-demo" href="../duo/">001 · Apple Duo <span>合上想象，展开惊喜 ↗</span></a>
+    <a class="next-demo" href="../pelican/">002 · 鹈鹕骑行俱乐部 <span>今天，慢慢骑。一起去吹吹海风 ↗</span></a>
+    <a class="next-demo" href="../saber/">003 · SABER 数字手办 <span>转动镜头，唤醒圣剑 ↗</span></a>
+    <a class="next-demo" href="../">返回首页 <span>查看四件作品 ↗</span></a>
+  </main>
+  <audio id="dialogue" src="../assets/dialogue.m4a" preload="auto"></audio>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

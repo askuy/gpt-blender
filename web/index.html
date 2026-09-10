@@ -1,107 +1,135 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en" data-lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="color-scheme" content="dark" />
-  <meta name="description" content="gpt-blender：用 GPT 拆解想法，用 Blender 把它们做成可以在浏览器里转动的三维作品。" />
-  <title>gpt-blender — 把想法，做成可以转动的东西</title>
+  <meta name="description" content="gpt-blender is a collection of editable 3D scenes made with GPT, Blender and the web." />
+  <title>gpt-blender — Ideas become things you can turn.</title>
   <link rel="icon" href="data:," />
   <link rel="stylesheet" href="./style.css" />
-  <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
 </head>
 <body>
   <main>
-    <header>
+    <header class="home-header">
       <a class="wordmark" href="./">gpt-blender<span> / HOME</span></a>
-      <span class="credit"><span class="dot"></span> GPT‑6 × Blender</span>
+      <div class="header-tools">
+        <span class="credit"><span class="dot"></span> GPT-6 × Blender</span>
+        <button class="language-toggle" id="languageToggle" type="button" aria-label="Switch to Chinese">
+          <span data-option="en">EN</span><i>/</i><span data-option="zh">中文</span>
+        </button>
+      </div>
     </header>
-    <nav class="project-nav" aria-label="作品导航">
-      <a href="./duo/"><span>001</span>Apple Duo</a>
-      <a href="./pelican/"><span>002</span>鹈鹕骑行</a>
-      <a href="./saber/"><span>003</span>Saber</a>
-      <a href="./"><span>004</span>牛来</a>
+
+    <nav class="project-nav" aria-label="Project navigation">
+      <a href="./duo/"><span>001</span><b><span class="lang-en">Apple Duo</span><span class="lang-zh">Apple Duo</span></b></a>
+      <a href="./pelican/"><span>002</span><b><span class="lang-en">Pelican Ride</span><span class="lang-zh">鹈鹕骑行</span></b></a>
+      <a href="./saber/"><span>003</span><b><span class="lang-en">Saber</span><span class="lang-zh">Saber</span></b></a>
+      <a href="./niulai/"><span>004</span><b><span class="lang-en">Niu Lai</span><span class="lang-zh">牛来</span></b></a>
     </nav>
-    <section class="intro-hero" aria-labelledby="intro-title">
-      <div class="intro-copy">
-        <p class="intro-kicker"><span class="dot"></span> GPT × BLENDER / DIGITAL OBJECTS</p>
-        <h1 id="intro-title">把想法，<br><em>做成可以转动的东西。</em></h1>
-        <p class="intro-lead">Ideas become things you can turn.</p>
-        <p class="intro-description">这是一个用 GPT 和 Blender 一起做三维作品的实验室。<br />从一句话、一个梗或一件喜欢的东西开始，最后交给浏览器，让它真正动起来。<span class="intro-description-en">A small lab for making 3D work with GPT and Blender.<br />Start with a sentence, a joke or a favorite object; end with something you can move through in a browser.</span></p>
-        <div class="intro-actions">
-          <a class="intro-button" href="#projects">浏览作品 <span>↓</span></a>
-          <a class="intro-source" href="https://github.com/askuy/gpt-blender" target="_blank" rel="noreferrer">查看开源代码 ↗</a>
+
+    <section class="home-hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="hero-kicker"><span class="dot"></span> GPT × BLENDER / DIGITAL OBJECTS</p>
+        <h1 id="hero-title">
+          <span class="lang-en">Ideas become<br /><em>things you can turn.</em></span>
+          <span class="lang-zh">把想法，<br /><em>做成可以转动的东西。</em></span>
+        </h1>
+        <p class="hero-strap">
+          <span class="lang-en">A small lab for making 3D work.</span>
+          <span class="lang-zh">一个把想法做成三维作品的小实验室。</span>
+        </p>
+        <p class="hero-description">
+          <span class="lang-en">GPT helps shape the idea into references, structure and code.<br />Blender turns that plan into a model, an animation and a world you can enter.</span>
+          <span class="lang-zh">GPT 把想法拆成参考、结构和代码。<br />Blender 把计划变成模型、动画和一个可以进入的世界。</span>
+        </p>
+        <div class="hero-actions">
+          <a class="hero-button" href="#projects">
+            <span class="lang-en">Explore the works</span><span class="lang-zh">浏览作品</span><b>↓</b>
+          </a>
+          <a class="hero-source" href="https://github.com/askuy/gpt-blender" target="_blank" rel="noreferrer">
+            <span class="lang-en">Open source ↗</span><span class="lang-zh">开源代码 ↗</span>
+          </a>
         </div>
+        <a class="hero-cue" href="#projects"><span>001—004</span><span class="lang-en">Four interactive studies</span><span class="lang-zh">四件交互作品</span><b>↓</b></a>
       </div>
-      <div class="intro-panel">
-        <p class="intro-panel-label">HOW IT COMES TO LIFE / 它如何被做出来</p>
-        <div class="method-list">
-          <article class="method-card">
-            <span class="method-number">01</span>
-            <div>
-              <h2>GPT</h2>
-              <p>把模糊的想法拆成参考、结构、动作和脚本。</p>
-              <small>Direction · Structure · Code</small>
-            </div>
+
+      <aside class="hero-index" aria-label="How the work is made">
+        <div class="hero-index-top"><span>HOW IT COMES TO LIFE</span><span>01—03</span></div>
+        <p class="index-intro">
+          <span class="lang-en">One conversation, then a scene.</span>
+          <span class="lang-zh">从一次对话，到一个场景。</span>
+        </p>
+        <div class="process-list">
+          <article class="process-row">
+            <span class="process-number">01</span>
+            <div><h2>GPT</h2><p><span class="lang-en">Breaks a visual idea into references, parts, motion and scripts.</span><span class="lang-zh">把视觉想法拆成参考、部件、动作和脚本。</span></p><small>Direction · Structure · Code</small></div>
           </article>
-          <article class="method-card">
-            <span class="method-number">02</span>
-            <div>
-              <h2>Blender</h2>
-              <p>把结构变成模型、材质、灯光、骨骼和动画。</p>
-              <small>Model · Shade · Animate</small>
-            </div>
+          <article class="process-row">
+            <span class="process-number">02</span>
+            <div><h2>Blender</h2><p><span class="lang-en">Builds the geometry, materials, lights, rigs and animation.</span><span class="lang-zh">制作几何体、材质、灯光、骨骼和动画。</span></p><small>Model · Shade · Animate</small></div>
           </article>
-          <article class="method-card">
-            <span class="method-number">03</span>
-            <div>
-              <h2>Web</h2>
-              <p>导出 GLB，让每件作品可以被看见、转动和分享。</p>
-              <small>Export · Interact · Share</small>
-            </div>
+          <article class="process-row">
+            <span class="process-number">03</span>
+            <div><h2>Web</h2><p><span class="lang-en">Exports a GLB so the result can be seen, turned and shared.</span><span class="lang-zh">导出 GLB，让结果可以被看见、转动和分享。</span></p><small>Export · Interact · Share</small></div>
           </article>
         </div>
-      </div>
+      </aside>
     </section>
-    <section id="projects" class="project-stage" aria-labelledby="project-title">
-      <div class="project-heading">
+
+    <section id="projects" class="projects" aria-labelledby="projects-title">
+      <div class="section-heading">
         <div>
           <p class="section-kicker">SELECTED WORKS / 作品</p>
-          <h2 id="project-title">从一句话开始，<br /><em>到一个场景。</em></h2>
+          <h2 id="projects-title">
+            <span class="lang-en">Four ways to<br /><em>enter an idea.</em></span>
+            <span class="lang-zh">四种进入想法<br /><em>的方式。</em></span>
+          </h2>
         </div>
-        <p>四个小实验，四种把想象变成空间的方式。<br />选四件作品，进入它们各自的世界。</p>
+        <p>
+          <span class="lang-en">Each project starts as a prompt and ends as a place<br />you can explore in the browser.</span>
+          <span class="lang-zh">每个项目都从一句提示开始，最后变成一个<br />可以在浏览器里探索的地方。</span>
+        </p>
       </div>
-      <section class="stage" aria-label="可旋转的牛来 3D 场景">
-        <canvas id="scene"></canvas>
-        <div class="loading" id="loading"><span class="loader"></span><p>牛来正在赶来的路上…</p></div>
-        <div class="scene-label"><span class="dot"></span><span id="modeLabel">导演视角</span></div>
-        <div class="title"><p>一个很严肃的亲子对话。</p><h1>牛来，<br><em>妈妈。</em></h1></div>
-        <div class="subtitle" id="subtitle" aria-live="off"><strong>妈妈——！</strong><span>MAMA!</span></div>
-        <div class="hint" id="hint">拖动画面，看看牛的背后。</div>
-        <div class="transport">
-          <button id="play" class="round" disabled aria-label="播放动画">▶</button>
-          <input id="timeline" type="range" min="0" max="13.99" step="0.01" value="0" aria-label="动画进度" />
-          <span id="time">00:00 / 00:14</span>
-          <button id="sound" class="round" aria-label="开启原片声音" title="开启原片声音">♪</button>
-        </div>
-        <div class="start-overlay" id="startOverlay" hidden><button id="start"><span>▶</span> 开始，声音开大一点</button></div>
-      </section>
+
+      <div class="project-grid">
+        <a class="project-card card-duo" href="./duo/">
+          <div class="card-top"><span>001</span><span>INTERACTIVE CONCEPT</span></div>
+          <div class="card-art" aria-hidden="true"><span>DUO</span><i></i></div>
+          <h3>Apple Duo</h3>
+          <p><span class="lang-en">A foldable phone with a surprise on the other side.</span><span class="lang-zh">一部折叠之后，另一面才开始有惊喜的手机。</span></p>
+          <span class="card-link"><span class="lang-en">Open the exhibit</span><span class="lang-zh">打开作品</span> ↗</span>
+        </a>
+        <a class="project-card card-pelican" href="./pelican/">
+          <div class="card-top"><span>002</span><span>BROWSER ANIMATION</span></div>
+          <div class="card-art" aria-hidden="true"><span>RIDE</span><i></i></div>
+          <h3><span class="lang-en">Pelican Ride</span><span class="lang-zh">鹈鹕骑行</span></h3>
+          <p><span class="lang-en">Take the scenic route through a tiny coastal world.</span><span class="lang-zh">骑进一座小小的海边世界，今天慢慢走。</span></p>
+          <span class="card-link"><span class="lang-en">Take the scenic route</span><span class="lang-zh">去吹吹海风</span> ↗</span>
+        </a>
+        <a class="project-card card-saber" href="./saber/">
+          <div class="card-top"><span>003</span><span>DIGITAL FIGURE</span></div>
+          <div class="card-art" aria-hidden="true"><span>SABER</span><i></i></div>
+          <h3>Saber</h3>
+          <p><span class="lang-en">A turnable display case for a figure, a sword and a quiet light.</span><span class="lang-zh">一座可以转动的展柜，放下一位骑士、一把剑和一束光。</span></p>
+          <span class="card-link"><span class="lang-en">Enter the display case</span><span class="lang-zh">进入数字展柜</span> ↗</span>
+        </a>
+        <a class="project-card card-niulai" href="./niulai/">
+          <div class="card-top"><span>004</span><span>ANIMATED SCENE</span></div>
+          <div class="card-art" aria-hidden="true"><span>NIU LAI</span><i></i></div>
+          <h3><span class="lang-en">Niu Lai</span><span class="lang-zh">牛来</span></h3>
+          <p><span class="lang-en">A movie meme rebuilt as a real, editable 3D scene.</span><span class="lang-zh">把一个电影梗，重新做成真正可编辑的三维场景。</span></p>
+          <span class="card-link"><span class="lang-en">Turn the scene</span><span class="lang-zh">转动这个场景</span> ↗</span>
+        </a>
+      </div>
     </section>
-    <footer>
-      <div class="footer-copy"><span class="eyebrow">THE MEME, IN THREE DIMENSIONS.</span><p>你以为只是个视频。试着转一下镜头。</p></div>
-      <div class="actions">
-        <button id="mama" class="primary" disabled>再喊一声「妈妈」 <span>↗</span></button>
-        <button id="camera" class="secondary" disabled>自由视角</button>
-        <button id="reset" class="secondary" disabled>重播</button>
-      </div>
+
+    <footer class="home-footer">
+      <p><span class="lang-en">Made with GPT, Blender and a browser.</span><span class="lang-zh">用 GPT、Blender 和浏览器做出来。</span></p>
+      <a href="https://github.com/askuy/gpt-blender" target="_blank" rel="noreferrer">github.com/askuy/gpt-blender ↗</a>
+      <span>© 2026 gpt-blender</span>
     </footer>
-    <div class="notes"><span>原梗：《牛来》 · 原片音轨节选</span><span>Blender 建模与动画 · 浏览器模型预览</span><a class="source-link" href="https://github.com/askuy/gpt-blender" target="_blank" rel="noreferrer">开源代码 ↗</a></div>
-    <a class="next-demo" href="./duo/">001 · Apple Duo <span>合上想象，展开惊喜 ↗</span></a>
-    <a class="next-demo" href="./pelican/">002 · 鹈鹕骑行俱乐部 <span>今天，慢慢骑。一起去吹吹海风 ↗</span></a>
-    <a class="next-demo" href="./saber/">003 · SABER 数字手办 <span>转动镜头，唤醒圣剑 ↗</span></a>
-    <a class="next-demo" href="./">004 · 牛来，妈妈 <span>回到第一件作品 ↗</span></a>
   </main>
-  <audio id="dialogue" src="./assets/dialogue.m4a" preload="auto"></audio>
   <script type="module" src="./app.js"></script>
 </body>
 </html>

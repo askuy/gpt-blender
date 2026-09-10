@@ -7,6 +7,7 @@
 - 开发仓库：`askuy/niulai`，保持私有。
 - 网页发布仓库：`askuy/gpt-blender-site`，公开且只保存 `web/` 的内容。
 - 访问地址：**https://askuy.github.io/gpt-blender-site/**。
+- 牛来展览：**https://askuy.github.io/gpt-blender-site/niulai/**。
 - Saber 手办：**https://askuy.github.io/gpt-blender-site/saber/**。
 
 当前账号套餐不支持从私有仓库启用 Pages，因此使用独立的公开网页仓库免费托管。发布仓库在 **Settings → Pages** 中选择 **Deploy from a branch → main → /(root)**。推送网页资源后，GitHub 自动构建并发布。
