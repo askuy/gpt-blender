@@ -135,20 +135,27 @@ def configure_camera(scene):
     focus.location = (0, 0, 2.05)
     camera.data.dof.focus_object = focus
 
-    # The orbit, close-up and reverse angle expose the model's depth, wheels,
-    # layered feathers, throat pouch and bicycle frame.
+    # Four long camera moves leave room for the viewer to read the geometry.
+    # The previous five two-second moves made the transitions feel rushed.
     shots = [
         (1, (6.9, -11.5, 5.8), (0.0, 0.0, 1.78), 52),
-        (49, (9.2, -2.9, 4.55), (0.0, 0.0, 1.92), 52),
-        (97, (3.45, -5.35, 4.25), (0.40, 0.0, 3.28), 52),
-        (145, (-7.6, 6.2, 4.85), (0.0, 0.0, 1.78), 52),
+        (73, (9.2, -2.9, 4.55), (0.0, 0.0, 1.92), 52),
+        (121, (3.45, -5.35, 4.25), (0.40, 0.0, 3.28), 52),
         (192, (5.8, -10.0, 5.25), (0.0, 0.0, 1.78), 52),
     ]
     if camera.animation_data:
         camera.animation_data_clear()
     for frame, at, target, lens in shots:
         keyframe_camera(camera, frame, at, target, lens)
+        focus.location = target
+        focus.keyframe_insert("location", frame=frame)
     smooth_camera_curves(camera)
+    if focus.animation_data and focus.animation_data.action:
+        for curve in focus.animation_data.action.fcurves:
+            for key in curve.keyframe_points:
+                key.interpolation = "BEZIER"
+                key.handle_left_type = "AUTO"
+                key.handle_right_type = "AUTO"
     return camera
 
 
@@ -169,7 +176,7 @@ def configure_overlays(camera):
     )
     subtitle = text_overlay(
         "Pelican Ride subtitle",
-        "PROCEDURAL PELICAN RIDE  /  鹈鹕骑行",
+        "PROCEDURAL PELICAN RIDE",
         (-2.20, 1.70, -7.0),
         0.105,
         accent_material,
