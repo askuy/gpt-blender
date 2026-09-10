@@ -2,15 +2,7 @@
 
 [English](README.md)
 
-使用 GPT 与 Blender 制作的可编辑 3D 场景和交互式网页作品集，包含牛来、Saber 数字手办和鹈鹕骑行等作品。
-
-**把《牛来》的“妈妈！牛来！”做成真正可编辑、可转动镜头的 3D 场景。** 小牛大喊，牛妈妈回头回应，镜头再拉远绕行，露出同一场景里的两头牛和蛇。
-
-GPT‑6 / Codex 编写并修改 Blender Python 脚本，Blender 负责生成几何体和渲染动画。仓库包含完整代码、可编辑模型、网页预览和成片。
-
-![原片对照、3D 复刻和镜头绕行](output/contact-sheet.jpg)
-
-[Blender 源文件](output/niulai.blend) · [带动画的 GLB](web/assets/niulai.glb) · [GitHub Pages 部署](deploy/README.md)
+使用 GPT 与 Blender 制作的可编辑 3D 场景和交互式网页作品集，依次展示 Apple Duo、鹈鹕骑行、Saber 数字手办和牛来。
 
 ## 新 Demo：Apple Duo · 展开，心动
 
@@ -77,6 +69,16 @@ npm run test:saber                   # 验证模型、骨骼、表情和网页�
 构建脚本：[src/build_saber.py](src/build_saber.py)；可编辑工程：[output/saber/saber.blend](output/saber/saber.blend)；网页模型：[web/saber/assets/saber.glb](web/saber/assets/saber.glb)。动作时间轴为 24 fps、384 帧：0–4 秒待机、4–10 秒致意、10–16 秒圣剑动作。完整工程保留独立部件，导出时才按材质合并网格；检查图保存在 `renders/saber/`。
 
 模型约 **8.4 MB（未压缩文件大小）**，首次访问另需下载 Three.js 和页面文件。资源加载完成后，播放动作、换灯光和旋转镜头不产生新的网络请求。网站继续使用免费 GitHub Pages，没有 Python / Go 后端或 AI API 调用；Python 只在离线 Blender 构建时使用。用户设置「减少动态效果」时，首次打开会保持静止。
+
+## 牛来，妈妈。
+
+**把《牛来》的“妈妈！牛来！”做成真正可编辑、可转动镜头的 3D 场景。** 小牛大喊，牛妈妈回头回应，镜头再拉远绕行，露出同一场景里的两头牛和蛇。
+
+GPT‑6 / Codex 编写并修改 Blender Python 脚本，Blender 负责生成几何体和渲染动画。仓库包含完整代码、可编辑模型、网页预览和成片。
+
+![原片对照、3D 复刻和镜头绕行](output/contact-sheet.jpg)
+
+[Blender 源文件](output/niulai.blend) · [带动画的 GLB](web/assets/niulai.glb) · [GitHub Pages 部署](deploy/README.md)
 
 ## 本地预览
 

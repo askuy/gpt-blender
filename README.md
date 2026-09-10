@@ -2,15 +2,7 @@
 
 [简体中文](README.zh-CN.md)
 
-A collection of editable 3D scenes and interactive browser demos created with GPT and Blender, including Niu Lai, Saber and a cycling pelican.
-
-**A Chinese movie meme, rebuilt as an editable 3D scene.** A calf screams “Mama!”, his mother turns and answers “Niu Lai!”, and the camera pulls back to reveal both characters and a snake in the same scene.
-
-GPT‑6 / Codex wrote and revised the Blender Python scripts. Blender generated the geometry and rendered the animation. You can watch the film, rotate the exported model in your browser, or edit the entire scene in Blender.
-
-![Original scene, 3D recreation and camera reveal](output/contact-sheet.jpg)
-
-[Blender scene](output/niulai.blend) · [Animated GLB](web/assets/niulai.glb) · [GitHub Pages deployment](deploy/README.md)
+A collection of editable 3D scenes and interactive browser demos created with GPT and Blender: Apple Duo, a cycling pelican, Saber and Niu Lai.
 
 ## New demo: Apple Duo — unfold the surprise
 
@@ -75,6 +67,16 @@ npm run test:saber
 Sources: [build script](src/build_saber.py), [editable Blender scene](output/saber/saber.blend), [animated GLB](web/saber/assets/saber.glb). The 24 fps, 384-frame timeline contains idle at 0–4 seconds, salute at 4–10 and the sword action at 10–16. The saved scene preserves individual parts; only the export representation merges meshes by material.
 
 The GLB is approximately **8.4 MB uncompressed**, plus the shared Three.js and page files on first load. After loading, interaction does not trigger further requests. Hosting stays on free GitHub Pages, with no backend or AI API calls. Blender Python is only used offline. The viewer starts paused when the browser requests reduced motion.
+
+## Niu Lai — the original scene
+
+**A Chinese movie meme, rebuilt as an editable 3D scene.** A calf screams “Mama!”, his mother turns and answers “Niu Lai!”, and the camera pulls back to reveal both characters and a snake in the same scene.
+
+GPT‑6 / Codex wrote and revised the Blender Python scripts. Blender generated the geometry and rendered the animation. You can watch the film, rotate the exported model in your browser, or edit the entire scene in Blender.
+
+![Original scene, 3D recreation and camera reveal](output/contact-sheet.jpg)
+
+[Blender scene](output/niulai.blend) · [Animated GLB](web/assets/niulai.glb) · [GitHub Pages deployment](deploy/README.md)
 
 ## Run the interactive preview
 

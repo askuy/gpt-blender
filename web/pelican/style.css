@@ -110,3 +110,5 @@ main { max-width: 1440px; margin: auto; padding-bottom: 24px; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+.site-footer { margin: 18px auto 0; text-align: center; font-size: 11px; color: #70816c; }
+.site-footer a:hover { color: var(--green); }
