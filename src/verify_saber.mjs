@@ -47,6 +47,7 @@ try {
   await page.getByRole('button', { name: '暂停动作', exact: true }).click();
   await page.evaluate(() => window.saber.seek(0));
   const idle = await state();
+  assert.equal(idle.expression, 0, 'Idle must use the closed-mouth portrait');
   assert.ok(idle.skinned > 0 && idle.clips > 0, 'Blender skin and animation data must load');
   assert.ok(idle.triangles > 50000 && idle.triangles < 250000, 'Figure geometry must remain within the render budget');
   assert.equal(idle.gemSize.length, 3, 'Inspect the actual exported guard jewel');
@@ -77,6 +78,7 @@ try {
   await snapshot('browser-raised');
   const raised = await state();
   assert.equal(raised.mode, 'excalibur');
+  assert.ok(raised.expression > .95, 'The battle expression must follow the exported sword animation');
   assert.ok(raised.energy > .8, 'Awakening must light the sword');
   const frozen = await page.locator('canvas').evaluate(canvas => canvas.toDataURL());
   await page.waitForTimeout(200);
@@ -84,9 +86,13 @@ try {
   await page.evaluate(() => window.saber.seek(3.1));
   assert.ok(differs(raised.swordRotation, (await state()).swordRotation, .5), 'The sword must sweep down after the raised pose');
   await snapshot('browser-action');
+  await page.evaluate(() => window.saber.setView('face', true));
+  await snapshot('browser-expression');
+  await page.evaluate(() => window.saber.setView('full', true));
   await page.evaluate(() => window.saber.seek(5.85));
   await page.getByRole('button', { name: '继续动作', exact: true }).click();
   await page.waitForFunction(() => window.saber.state().mode === 'idle');
+  assert.equal((await state()).expression, 0, 'Returning to idle must restore the calm portrait');
 
   await page.getByRole('button', { name: '重置展柜', exact: true }).click();
   await page.evaluate(() => { window.saber.pause(); window.saber.seek(0); window.saber.setView('full', true); });
@@ -162,7 +168,7 @@ try {
   await calm.close();
   const result = {
     passed: true, url,
-    checks: ['skinned GLB', 'jewel dimensions', 'blink shape keys', 'moving hand and sword bones', 'pause freezes pose and effects', 'swing and return to idle', 'drag and auto orbit', 'camera presets', 'lighting and resin', 'reset', 'PNG download', 'dialog', 'mobile layout', 'no extra interaction traffic', 'reduced motion', 'no page errors'],
+    checks: ['skinned GLB', 'jewel dimensions', 'blink shape keys', 'battle expression and return to calm', 'moving hand and sword bones', 'pause freezes pose and effects', 'swing and return to idle', 'drag and auto orbit', 'camera presets', 'lighting and resin', 'reset', 'PNG download', 'dialog', 'mobile layout', 'no extra interaction traffic', 'reduced motion', 'no page errors'],
     state: idle,
   };
   await writeFile(join(root, 'output/saber/verification.json'), JSON.stringify(result, null, 2));

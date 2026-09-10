@@ -16,7 +16,11 @@ GPT‑6 / Codex wrote and revised the Blender Python scripts. Blender generated 
 
 ![Saber front, rear, salute and raised-sword poses](output/saber/contact-sheet.jpg)
 
-The second sculpt studies [Good Smile's Saber ~Triumphant Excalibur~ product photographs](https://www.goodsmile.info/en/product/2780/). It rebuilds the tapered face, flush painted eyes, swept fringe and braided bun, plate seams, layered vambraces, pointed front skirt panel, double ivory ruffle and angular sword guard. The photographs are visual references, not model textures. [src/saber_sculpt.py](src/saber_sculpt.py) contains the revised geometry; the main builder owns the rig and export.
+The third sculpt studies [Good Smile's Saber ~Triumphant Excalibur~ product photographs](https://www.goodsmile.info/en/product/2780/) with a focus on likeness: a shorter lower face, fuller teal irises, angled eyelids, uneven swept hair layers, tapered closed hair tips and buried temple roots. Painted skin color, a higher cuirass neckline, asymmetric skirt lift and a wider stance refine the figure. A baked mouth expression follows the sword action and returns to calm at idle. [src/saber_portrait.py](src/saber_portrait.py) owns the face and hair; [src/saber_sculpt.py](src/saber_sculpt.py) owns the costume and sword.
+
+![Same-angle portrait comparison, revision 2 and revision 3](output/saber/revision-comparison.jpg)
+
+Reference photos are not used as textures or published web assets. Visual review compares head proportions, eyes and hair direction in adjacent crops; different poses, expressions and lighting make a pixel-based identity percentage inappropriate. With the local reference and previous-render cache present, `node src/compare_saber.mjs` produces `.cache/saber-reference/likeness-comparison.jpg`. This remains a procedural fan sculpt, with visible differences in hair detail, expression and body pose from the finished reference figure.
 
 The figure breathes, blinks, turns her head and moves her skirt. “抬剑致意” plays a salute; “唤醒圣剑” raises, charges and swings the sword before returning to idle. Both hands follow the grip through baked two-bone IK. Pause freezes the pose and effects; the viewer also offers close-up cameras, three lighting presets, white resin material and PNG capture.
 
@@ -24,13 +28,14 @@ The same **GPT‑6 / Codex → Blender Python → Eevee render inspection → re
 
 ```sh
 npm run dev                          # Visit /saber/
-npm run saber:scene -- --preview     # Rebuild the scene, GLB and six inspection frames
+npm run saber:scene -- --preview     # Rebuild the scene, GLB and eight inspection frames
+npm run saber:scene -- --study face  # Render a portrait study without replacing the scene or GLB
 npm run test:saber
 ```
 
 Sources: [build script](src/build_saber.py), [editable Blender scene](output/saber/saber.blend), [animated GLB](web/saber/assets/saber.glb). The 24 fps, 384-frame timeline contains idle at 0–4 seconds, salute at 4–10 and the sword action at 10–16. The saved scene preserves individual parts; only the export representation merges meshes by material.
 
-The GLB is approximately **8.8 MB uncompressed**, plus the shared Three.js and page files on first load. After loading, interaction does not trigger further requests. Hosting stays on free GitHub Pages, with no backend or AI API calls. Blender Python is only used offline. The viewer starts paused when the browser requests reduced motion.
+The GLB is approximately **8.4 MB uncompressed**, plus the shared Three.js and page files on first load. After loading, interaction does not trigger further requests. Hosting stays on free GitHub Pages, with no backend or AI API calls. Blender Python is only used offline. The viewer starts paused when the browser requests reduced motion.
 
 ## Run the interactive preview
 

@@ -16,7 +16,11 @@ GPT‑6 / Codex 编写并修改 Blender Python 脚本，Blender 负责生成几�
 
 ![Saber 的正面、背面、抬剑与蓄力姿态](output/saber/contact-sheet.jpg)
 
-第二版对照了 [Good Smile「Saber ～誓约胜利之剑～」商品图](https://www.goodsmile.info/en/product/2780/)，重新制作收尖的脸型、贴合面部的彩绘绿眼、斜刘海与编发、板甲接缝、分层护臂、前裙片与双层白色裙边，并重做 Excalibur 的护手与蓝色镶嵌。参考照片只用于观察，没有贴到模型上。细部造型在 [src/saber_sculpt.py](src/saber_sculpt.py) 中，骨骼和导出逻辑保留在主构建脚本中。
+第三版继续对照 [Good Smile「Saber ～誓约胜利之剑～」商品图](https://www.goodsmile.info/en/product/2780/)，重点修正角色辨识度：缩短下半张脸、重新绘制大虹膜的青绿色眼睛与眼尾、重做从偏心发缝扫下的分层刘海，并修正发梢厚边和侧发接头。面部加入轻微彩绘肤色，服装调整了胸甲上沿、裙摆起伏和双脚站位。挥剑时嘴部会切换战斗表情，收剑后恢复。面部与发型在 [src/saber_portrait.py](src/saber_portrait.py)，服装和剑在 [src/saber_sculpt.py](src/saber_sculpt.py)。
+
+![第二版与第三版的同角度面部对照](output/saber/revision-comparison.jpg)
+
+参考照片只用于观察，没有作为纹理或网页资源发布。相似度检查采用参考图与渲染的并排裁切，逐项比较脸部比例、眼睛和发束走向；照片的姿态、表情和灯光不同，因此不把像素误差换算成角色相似度百分比。保留本地参考照片和修改前截图时，运行 `node src/compare_saber.mjs` 可生成 `.cache/saber-reference/likeness-comparison.jpg`。这仍是程序化同人雕塑，发束层次、表情塑造和动态体态与参考成品存在差距。
 
 - 默认有轻微呼吸、转头、眨眼和裙摆摆动。
 - 点击「抬剑致意」或「唤醒圣剑」，播放举剑、蓄力、挥剑和收剑动作；双手通过双骨骼 IK 跟随剑柄，烘焙后导出。
@@ -26,13 +30,14 @@ GPT‑6 / Codex 编写并修改 Blender Python 脚本，Blender 负责生成几�
 
 ```sh
 npm run dev                          # 打开 /saber/
-npm run saber:scene -- --preview     # 离线重建工程、GLB 和六张检查图
-npm run test:saber                   # 验证模型、真实骨骼运动和网页交互
+npm run saber:scene -- --preview     # 离线重建工程、GLB 和八张检查图
+npm run saber:scene -- --study face  # 只渲染面部草稿，不改工程或 GLB
+npm run test:saber                   # 验证模型、骨骼、表情和网页交互
 ```
 
 构建脚本：[src/build_saber.py](src/build_saber.py)；可编辑工程：[output/saber/saber.blend](output/saber/saber.blend)；网页模型：[web/saber/assets/saber.glb](web/saber/assets/saber.glb)。动作时间轴为 24 fps、384 帧：0–4 秒待机、4–10 秒致意、10–16 秒圣剑动作。完整工程保留独立部件，导出时才按材质合并网格；检查图保存在 `renders/saber/`。
 
-模型约 **8.8 MB（未压缩文件大小）**，首次访问另需下载 Three.js 和页面文件。资源加载完成后，播放动作、换灯光和旋转镜头不产生新的网络请求。网站继续使用免费 GitHub Pages，没有 Python / Go 后端或 AI API 调用；Python 只在离线 Blender 构建时使用。用户设置「减少动态效果」时，首次打开会保持静止。
+模型约 **8.4 MB（未压缩文件大小）**，首次访问另需下载 Three.js 和页面文件。资源加载完成后，播放动作、换灯光和旋转镜头不产生新的网络请求。网站继续使用免费 GitHub Pages，没有 Python / Go 后端或 AI API 调用；Python 只在离线 Blender 构建时使用。用户设置「减少动态效果」时，首次打开会保持静止。
 
 ## 本地预览
 

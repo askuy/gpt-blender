@@ -11,7 +11,7 @@ from mathutils import Vector
 def install(api):
     """Share the builder's materials/helpers without introducing another scene."""
     for name in ['bpy','P','mesh','sphere','cylinder','curve','ring','lock','rounded',
-                 'select_only','PARTS','BLINK','SKIN','BLUSH','IVORY','IVORY_SHADOW',
+                 'select_only','PARTS','BLINK','EXPRESSIONS','SKIN','BLUSH','IVORY','IVORY_SHADOW',
                  'WHITE','LIP','INK','IRIS','IRIS_DARK','IRIS_LIGHT','HAIR','HAIR_LIGHT',
                  'HAIR_DARK','BLUE','BLUE_DARK','BLUE_LIGHT','SILVER','STEEL_DARK',
                  'GOLD','BASE','BLADE','mat','srgb']:
@@ -28,165 +28,10 @@ def profile(points,y):
     return points[0][1:] if y<points[0][0] else points[-1][1:]
 
 
-FACE=[(4.535,.026,.110,.040),(4.57,.078,.169,.068),(4.63,.168,.212,.135),
-      (4.72,.249,.247,.209),(4.82,.296,.257,.246),(4.94,.311,.251,.267),
-      (5.07,.306,.236,.263),(5.19,.258,.196,.231),(5.28,.132,.096,.127),(5.317,.006,.009,.009)]
-
-
-def face_depth(x,y):
-    rx,front,_=profile(FACE,y)
-    z=front*max(0,1-(x/max(rx,.001))**2)**.28
-    z+=.019*math.exp(-(x/.023)**2-((y-4.765)/.032)**2)
-    z+=.008*math.exp(-(x/.034)**2-((y-4.81)/.060)**2)
-    z+=.007*math.exp(-(x/.072)**2-((y-4.665)/.043)**2)
-    return z
-
-
-def paint(name,vertices,faces,color,bone='head',blink_y=None):
-    obj=mesh(name,vertices,faces,color,bone)
-    if blink_y is not None:BLINK.append((obj,blink_y))
-    return obj
-
-
-def disk(name,cx,cy,rx,ry,depth,material,blink_y=None):
-    vertices=[(cx,cy,face_depth(cx,cy)+depth)]
-    for i in range(49):
-        a=math.tau*i/48;x=cx+rx*math.cos(a);y=cy+ry*math.sin(a)
-        vertices.append((x,y,face_depth(x,y)+depth))
-    return paint(name,vertices,[(0,i+1,i+2) for i in range(48)],material,blink_y=blink_y)
-
-
-def hair_piece(name,control,width,depth=.024,grooves=2):
-    obj=lock(name,control,width,depth,HAIR,'head',root_taper=True)
-    # Fine grooves follow the same sculpted clump rather than painting stripes.
-    c=list(map(Vector,control))
-    for j in range(grooves):
-        points=[];offset=(j-(grooves-1)/2)*width*.38
-        for i in range(18):
-            t=.10+.78*i/17;v=(1-t)**3*c[0]+3*(1-t)**2*t*c[1]+3*(1-t)*t*t*c[2]+t**3*c[3]
-            v.x+=offset*math.sin(math.pi*(.18+.82*t))**.7
-            v.z+=depth*.78
-            points.append(tuple(v))
-        curve(name+' strand groove',points,.0016,HAIR_DARK,'head')
-    return obj
-
-
 def head():
-    verts=[];faces=[]
-    for i in range(81):
-        y=4.535+(5.317-4.535)*i/80;rx,front,back=profile(FACE,y)
-        for j in range(96):
-            a=math.tau*j/96;x=rx*math.sin(a)
-            z=face_depth(x,y) if math.cos(a)>=0 else back*math.cos(a)
-            verts.append((x,y,z))
-    for i in range(80):
-        for j in range(96):a=i*96+j;b=i*96+(j+1)%96;faces.append((a,b,b+96,a+96))
-    mesh('Saber sculpt — tapered jaw and facial planes',verts,faces,SKIN,'head')
-    cylinder('Slender neck',(0,4.31,0),(0,4.65,-.012),.106,.092,SKIN,'head')
-    for sign in [-1,1]:
-        sphere('Ear',(sign*.301,4.795,-.015),(.047,.079,.036),SKIN,'head')
-        sphere('Ear concha',(sign*.325,4.797,.011),(.020,.048,.010),BLUSH,'head')
-        inner=.062;outer=.247;cy=4.887
-        def eye_y(x,top):
-            u=max(0,min(1,(abs(x)-inner)/(outer-inner)))
-            return cy+.025*u+(.053 if top else -.033)*math.sin(math.pi*u)**.85
-        # Painted almond opening conforms to the cheek. No protruding eyeballs.
-        verts=[];faces=[]
-        for i in range(49):
-            x=sign*(inner+(outer-inner)*i/48)
-            for k in range(9):
-                y=eye_y(x,False)+(eye_y(x,True)-eye_y(x,False))*k/8
-                verts.append((x,y,face_depth(x,y)+.0025))
-        for i in range(48):
-            for k in range(8):a=i*9+k;faces.append((a,a+9,a+10,a+1))
-        paint('Painted almond eye',verts,faces,WHITE,blink_y=cy)
-        # Thin, clipped iris with a radial painted gradient and a shaded upper lid.
-        cx=sign*.156;iy=cy+.016;verts=[];faces=[];colors=[]
-        for r in range(13):
-            radius=max(.0001,r/12)
-            for j in range(64):
-                a=math.tau*j/64;x=cx+.043*radius*math.cos(a)
-                y=iy+.056*radius*math.sin(a)
-                y=max(eye_y(x,False)+.001,min(eye_y(x,True)-.001,y))
-                verts.append((x,y,face_depth(x,y)+.0038))
-                if radius>.87:color=(.012,.075,.065)
-                elif radius<.34:color=(.018,.10,.09)
-                else:
-                    light=max(0,min(1,(iy+.02-y)/.065))
-                    fiber=.025*math.sin(a*23+radius*17)
-                    color=(.014+.14*light+fiber,.12+.45*light+fiber,.11+.30*light+fiber)
-                colors.append(tuple(srgb(max(0,c)) for c in color))
-        for r in range(12):
-            for j in range(64):a=r*64+j;b=r*64+(j+1)%64;faces.append((a,b,b+64,a+64))
-        iris_mat=bpy.data.materials.get('Painted emerald iris')
-        if iris_mat is None:
-            iris_mat=mat('Painted emerald iris','#ffffff',0,.57)
-            vertex=iris_mat.node_tree.nodes.new('ShaderNodeVertexColor');vertex.layer_name='Iris pigment'
-            iris_mat.node_tree.links.new(vertex.outputs['Color'],iris_mat.node_tree.nodes.get('Principled BSDF').inputs['Base Color'])
-        iris=paint('Emerald iris painting',verts,faces,iris_mat,blink_y=cy)
-        layer=iris.data.color_attributes.new(name='Iris pigment',type='FLOAT_COLOR',domain='POINT')
-        for item,color in zip(layer.data,colors):item.color=(*color,1)
-        disk('Painted pupil',cx,iy+.003,.011,.028,.0049,IRIS_DARK,cy)
-        disk('Iris painted highlight',cx-.013,iy+.019,.010,.013,.0058,WHITE,cy)
-        disk('Iris secondary glint',cx+.015,iy-.025,.004,.0045,.0058,WHITE,cy)
-        # A tapered ink ribbon supplies the characteristic sharp upper lash line.
-        verts=[];faces=[]
-        for i in range(41):
-            u=i/40;x=sign*(inner+(outer-inner)*u);y=eye_y(x,True)
-            width=.002+.009*math.sin(math.pi*u)**.65+.003*u
-            for dy in [0,width]:verts.append((x,y+dy,face_depth(x,y+dy)+.0048))
-        for i in range(40):a=i*2;faces.append((a,a+2,a+3,a+1))
-        paint('Sharp upper eyelash',verts,faces,INK,blink_y=cy)
-        points=[(sign*.230,cy+.045),(sign*.260,cy+.041),(sign*.247,cy+.023)]
-        paint('Outer eyelash wing',[(x,y,face_depth(x,y)+.0049) for x,y in points],[(0,1,2)],INK,blink_y=cy)
-        lower=[]
-        for i in range(18):
-            x=sign*(.14+.107*i/17);y=eye_y(x,False);lower.append((x,y,face_depth(x,y)+.003))
-        curve('Fine lower lid',lower,.0014,LIP,'head')
-        points=[(sign*.07,4.980),(sign*.145,5.010),(sign*.227,5.026)]
-        curve('Resolute brow',[(x,y,face_depth(x,y)+.002) for x,y in points],.0045,HAIR_DARK,'head')
-    curve('Quiet closed mouth',[(x,y,face_depth(x,y)+.0015) for x,y in [(-.032,4.653),(0,4.656),(.032,4.654)]],.0022,LIP,'head')
-    # Smaller crown and directional, asymmetrical fringe with individual tips.
-    verts=[];faces=[]
-    for i in range(29):
-        for j in range(80):
-            a=math.tau*j/80;limit=1.21+1.25*(1-math.cos(a))/2;theta=.008+i/28*limit
-            side=math.cos(a);front=side**.50 if side>=0 else side
-            verts.append((.355*math.sin(theta)*math.sin(a),4.982+.383*math.cos(theta),.309*math.sin(theta)*front-.016))
-    for i in range(28):
-        for j in range(80):a=i*80+j;b=i*80+(j+1)%80;faces.append((a,a+80,b+80,b))
-    mesh('Hair crown',verts,faces,HAIR,'head')
-    for i,(root,tip,tip_y,width) in enumerate([
-        (-.095,-.288,4.901,.051),(-.052,-.232,4.918,.060),(-.01,-.168,4.949,.057),
-        (.025,-.103,4.963,.055),(.055,-.025,4.928,.063),(.075,.050,4.937,.059),
-        (.095,.128,4.969,.064),(.12,.208,4.949,.064),(.14,.280,4.908,.054)]):
-        hair_piece('Saber swept fringe %02d'%i,[(root,5.315,-.010),(root-.035,5.33,.248),(tip-.025,5.15,.319),(tip,tip_y,.249 if abs(tip)>.22 else .275)],width,.027)
-    for sign in [-1,1]:
-        for i in range(4):
-            hair_piece('Tapered temple lock',[(sign*(.285+.014*i),5.186,.123),(sign*(.340+.012*i),4.96,.180),(sign*(.29+.044*i),4.67,.164),(sign*(.28+.065*i),4.585+.037*i,.16-.063*i)],.031-i*.003,.018,1)
-        for i in range(20):
-            a=.75+i*.125
-            points=[]
-            for k in range(32):
-                t=k/31;theta=.11+(1.13+1.19*(1-math.cos(a))/2)*t
-                side=math.cos(a);front=side**.50 if side>=0 else side
-                points.append((sign*.358*math.sin(theta)*math.sin(a),4.982+.386*math.cos(theta),.312*math.sin(theta)*front-.016))
-            curve('Combed crown hair groove',points,.0019,HAIR_DARK if i%3 else HAIR_LIGHT,'head')
-    sphere('Coiled hair bun',(0,4.947,-.318),(.200,.180,.141),HAIR,'head')
-    for strand in range(3):
-        points=[]
-        for k in range(97):
-            a=math.tau*k/96;phase=a*12+strand*math.tau/3;r=.172+.010*math.cos(phase)
-            points.append((r*math.cos(a),4.947+(r-.020)*math.sin(a),-.455+.010*math.sin(phase)))
-        curve('Woven bun braid',points,.012,HAIR_LIGHT if strand==0 else HAIR,'head')
-    for i in range(7):
-        r=.025+i*.020
-        curve('Coiled bun hair',[(r*math.cos(a),4.947+r*.88*math.sin(a),-.459+.045*(r/.17)**2) for a in [math.tau*k/48 for k in range(49)]],.0016,HAIR_DARK,'head')
-    for sign in [-1,1]:
-        lock('Folded royal-blue bow',[(0,4.82,-.455),(sign*.36,4.98,-.48),(sign*.30,4.69,-.54),(0,4.81,-.46)],.079,.013,BLUE,'head')
-        lock('Bow trailing fabric',[(sign*.027,4.82,-.46),(sign*.10,4.65,-.50),(sign*.26,4.48,-.42),(sign*.33,4.52,-.45)],.047,.007,BLUE,'head')
-    sphere('Bow knot',(0,4.815,-.486),(.057,.041,.026),BLUE,'head')
-    hair_piece('Saber ahoge',[(.055,5.337,-.02),(-.045,5.620,.02),(-.242,5.596,.05),(-.259,5.423,.099)],.017,.009,0)
+    import saber_portrait
+    saber_portrait.install(globals())
+    saber_portrait.head()
 
 
 BODY=[(3.39,.266,.187),(3.54,.273,.193),(3.70,.317,.233),(3.91,.395,.252),(4.10,.377,.197),(4.22,.327,.158),(4.34,.205,.125),(4.42,.122,.110)]
@@ -195,7 +40,7 @@ BODY=[(3.39,.266,.187),(3.54,.273,.193),(3.70,.317,.233),(3.91,.395,.252),(4.10,
 def armor_depth(x,y):
     rx,rz=profile(BODY,y)
     z=rz*max(0,1-(x/rx)**2)**.5+.018
-    z+=.026*math.exp(-((abs(x)-.16)/.115)**2-((y-3.94)/.14)**2)
+    z+=.042*math.exp(-((abs(x)-.16)/.115)**2-((y-3.98)/.14)**2)
     return z
 
 
@@ -223,7 +68,7 @@ def torso():
     for i in range(33):
         t=i/32
         for j in range(96):
-            a=math.tau*j/96;y=3.51+(4.125+.045*abs(math.sin(a))-3.51)*t
+            a=math.tau*j/96;y=3.51+(4.225-.065*abs(math.sin(a))-3.51)*t
             rx,rz=profile(BODY,y);x=(rx+.013)*math.sin(a)
             z=(armor_depth(min(rx-.0001,max(-rx+.0001,x)),y) if math.cos(a)>=0 else (rz+.018)*math.cos(a))
             verts.append((x,y,z))
@@ -234,7 +79,7 @@ def torso():
     for row in [0,32]:curve('Cuirass rolled edge',verts[row*96:(row+1)*96]+[verts[row*96]],.006,STEEL_DARK,'chest')
     for sign in [-1,1]:
         for points in [
-            [(0,4.122),(.09,3.979),(.265,3.905),(.338,4.068)],
+            [(0,4.220),(.09,3.995),(.265,3.930),(.338,4.140)],
             [(.265,3.905),(.214,3.706),(.275,3.553)],
             [(0,3.89),(.076,3.816),(.214,3.706)],
         ]:
@@ -267,12 +112,12 @@ def torso():
 
 def skirt_position(t,a,outer=False):
     # Fitted waist, flared lower skirt, and uneven lifted hem replace the cone.
-    rx=.30+1.04*t**1.20;rz=.20+.85*t**1.13
-    wave=(.006+.035*t*t)*math.cos(14*a+.9*t)+.055*t**3*math.sin(3*a+.6)
+    rx=.30+1.17*t**.92;rz=.20+.87*t**.94
+    wave=(.005+.055*t**1.6)*math.cos(14*a+.9*t)+.055*t**3*math.sin(3*a+.6)
     if outer:rx+=.030;rz+=.030
-    y=3.39-2.37*t+(.19*math.cos(a-.40)+.065*math.sin(3*a))*t**3
+    y=3.39-2.27*t+(.18*math.cos(a-.40)+.25*abs(math.sin(a))**1.5+.13*math.sin(a))*t**2
     if outer:y+=.13*t
-    return ((rx+wave)*math.sin(a)-.095*t*t,y,(rz+wave)*math.cos(a))
+    return ((rx+wave)*math.sin(a)+.10*t*t,y,(rz+wave)*math.cos(a)-.08*t*t)
 
 
 def skirt():
@@ -311,7 +156,7 @@ def skirt():
     for i in range(41):
         t=i/40;width=.145+.19*math.sin(math.pi*t*.77)
         for j in range(17):
-            u=-1+j/8;x=u*width-.095*t*t
+            u=-1+j/8;x=u*width+.10*t*t
             _,y,z=skirt_position(t,0,True)
             y+=.25*abs(u)**1.6*t**5
             z+=.048-.044*u*u+.009*math.cos(u*math.pi*3)*t
@@ -343,6 +188,7 @@ def skirt():
             curve('Tasset dark rolled rim',verts[-29:],.009,STEEL_DARK,'skirt')
             for j in [2,26]:sphere('Tasset silver rivet',verts[-29+j],(.015,.015,.014),SILVER,'skirt')
     for sign in [-1,1]:
+        start=len(PARTS)
         x=sign*.34
         cylinder('Clothed leg',(x,.38,-.035),(x,2.2,-.035),.105,.15,BLUE_DARK,'hips')
         verts=[];faces=[]
@@ -352,6 +198,7 @@ def skirt():
         for i in range(4):
             for j in range(48):a=i*48+j;b=i*48+(j+1)%48;faces.append((a,b,b+48,a+48))
         mesh('Shaped silver greave',verts,faces,SILVER,'hips')
+        sphere('Sculpted knee plate',(x,1.67,.034),(.158,.153,.140),SILVER,'hips')
         curve('Greave front ridge',[(x,.45,.085),(x,.90,.102),(x,1.55,.128)],.005,STEEL_DARK,'hips')
         verts=[];faces=[]
         for z,rx,y,ry in [(-.15,.059,.345,.084),(-.075,.103,.385,.135),(.08,.123,.370,.117),(.25,.109,.323,.070),(.42,.013,.295,.021)]:
@@ -365,6 +212,17 @@ def skirt():
         for i in range(3):
             z=.10+.085*i;y=.46-.026*i
             curve('Toe plate seam',[(x-.10,y-.045,z),(x,y,z+.005),(x+.10,y-.045,z)],.005,STEEL_DARK,'hips')
+        # Widen the stance with one foot leading. Baking this into the actual
+        # geometry preserves the original grip IK and keeps both feet planted.
+        bpy.context.view_layer.update()
+        for obj,_ in PARTS[start:]:
+            transform=obj.matrix_world.copy()
+            for vertex in obj.data.vertices:
+                p=transform @ vertex.co;y=p.z
+                p.x+=sign*max(0,2.20-y)*.090
+                p.y-=sign*.15*max(0,2.20-y)/1.9
+                vertex.co=p
+            obj.matrix_world.identity()
 
 
 def tube(name,a,b,sections,material,bone,folds=0):

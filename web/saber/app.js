@@ -117,13 +117,13 @@ document.addEventListener('keydown',e=>{if($('about').open||['BUTTON','INPUT','A
 document.addEventListener('visibilitychange',()=>{last=performance.now();});
 
 try{
-  const gltf=await new GLTFLoader().loadAsync('./assets/saber.glb?v=2',event=>{if(event.total)$('loadProgress').style.width=`${Math.min(98,event.loaded/event.total*100)}%`;});
+  const gltf=await new GLTFLoader().loadAsync('./assets/saber.glb?v=3',event=>{if(event.total)$('loadProgress').style.width=`${Math.min(98,event.loaded/event.total*100)}%`;});
   model=gltf.scene;scene.add(model);
   model.traverse(o=>{if(o.isMesh){
     const name=o.material?.name||'';
     // Subpixel hair grooves and painted facial details should not produce
     // stippled shadow-map artifacts on the small collectible's face.
-    const painted=/hair|skin|eye|iris|jade|lash|lips|blush/i.test(name);
+    const painted=/hair|skin|eye|iris|jade|lash|lips|blush|mouth|teeth/i.test(name);
     o.castShadow=!/Hair strand shadows|Painted lash ink/.test(name);
     o.receiveShadow=!painted;
     originalMaterials.set(o,o.material);
@@ -138,7 +138,7 @@ try{
   mixer.setTime(0);ready=true;$('loading').hidden=true;document.querySelectorAll('button[disabled]').forEach(b=>b.disabled=false);updateState();
   const geometry={triangles:0,meshes:0,skinned:0,gemSize:[]};
   model.traverse(o=>{if(o.isMesh){geometry.meshes++;geometry.triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3;if(o.material?.name==='Deep jade'&&!o.morphTargetInfluences){o.geometry.computeBoundingBox();geometry.gemSize=o.geometry.boundingBox.getSize(new THREE.Vector3()).multiply(o.getWorldScale(new THREE.Vector3())).toArray();}}if(o.isSkinnedMesh)geometry.skinned++;});
-  window.saber={ready:true,play:playMotion,pause:()=>{playing=false;updateState();},seek:t=>{const [start,end]=clips[mode];elapsed=THREE.MathUtils.clamp(t,0,end-start);mixer.setTime(start+elapsed);},setView,setLight,reset,state:()=>{const point=new THREE.Vector3();bone?.getWorldPosition(point);let blink=0;model.traverse(o=>{if(o.morphTargetDictionary?.Blink!==undefined)blink=Math.max(blink,o.morphTargetInfluences[o.morphTargetDictionary.Blink]);});return{ready,mode,elapsed,playing,resin,view,light:document.body.dataset.light,autoRotate:controls.autoRotate,clips:gltf.animations.length,...geometry,blink,energy,camera:camera.position.toArray(),hand:point.toArray(),swordRotation:swordBone?.getWorldQuaternion(new THREE.Quaternion()).toArray()};}};
+  window.saber={ready:true,play:playMotion,pause:()=>{playing=false;updateState();},seek:t=>{const [start,end]=clips[mode];elapsed=THREE.MathUtils.clamp(t,0,end-start);mixer.setTime(start+elapsed);},setView,setLight,reset,state:()=>{const point=new THREE.Vector3();bone?.getWorldPosition(point);let blink=0,expression=0;model.traverse(o=>{if(o.morphTargetDictionary?.Blink!==undefined)blink=Math.max(blink,o.morphTargetInfluences[o.morphTargetDictionary.Blink]);if(o.morphTargetDictionary?.Battle!==undefined)expression=Math.max(expression,o.morphTargetInfluences[o.morphTargetDictionary.Battle]);});return{ready,mode,elapsed,playing,resin,view,light:document.body.dataset.light,autoRotate:controls.autoRotate,clips:gltf.animations.length,...geometry,blink,expression,energy,camera:camera.position.toArray(),hand:point.toArray(),swordRotation:swordBone?.getWorldQuaternion(new THREE.Quaternion()).toArray()};}};
 }catch(error){console.error(error);$('loadingText').textContent='展柜暂时没有打开，请刷新页面重试。';$('loadProgress').style.width='0';}
 function frame(now){
   requestAnimationFrame(frame);const dt=Math.min((now-last)/1000,.04);last=now;if(document.hidden)return;

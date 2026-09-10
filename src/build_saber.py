@@ -14,6 +14,7 @@ FPS=24
 DURATION=16
 PARTS=[]
 BLINK=[]
+EXPRESSIONS=[]
 
 def P(p): return Vector((p[0],-p[2],p[1]))
 def select_only(obj):
@@ -125,6 +126,11 @@ def rig_and_animate():
         obj.shape_key_add(name='Basis');key=obj.shape_key_add(name='Blink')
         for v in key.data:v.co.z=cy+(v.co.z-cy)*.035
         blink_keys.append(key)
+    expression_keys=[]
+    for obj,open_vertices in EXPRESSIONS:
+        obj.shape_key_add(name='Basis');key=obj.shape_key_add(name='Battle')
+        for vertex,co in zip(key.data,open_vertices):vertex.co=P(co)
+        expression_keys.append(key)
     bones=rig.pose.bones
     for b in bones:b.rotation_mode='QUATERNION' if b.name.startswith(('upper.','fore.','hand.','sword')) else 'XYZ'
     rest={name:rig.data.bones[name].matrix_local.copy() for name in specs}
@@ -188,6 +194,8 @@ def rig_and_animate():
             b.keyframe_insert('location',frame=f)
         blink=max(0,1-abs((t%4)-2.45)/.105)
         for key in blink_keys:key.value=blink;key.keyframe_insert('value',frame=f)
+        expression=pose_curve(t,[(0,(0,)),(10,(0,)),(11.4,(1,)),(13.2,(1,)),(14.5,(0,)),(16,(0,))])[0]
+        for key in expression_keys:key.value=expression;key.keyframe_insert('value',frame=f)
     rig['demo']='Saber • a Blender-built animated collectible'
     rig['clips']='idle:0-4,salute:4-10,excalibur:10-16'
     return rig
@@ -196,17 +204,17 @@ def rig_and_animate():
 def aim(obj,at,target):obj.location=P(at);obj.rotation_euler=(P(target)-obj.location).to_track_quat('-Z','Y').to_euler()
 def main():
     global SKIN,BLUSH,IVORY,IVORY_SHADOW,WHITE,LIP,INK,IRIS,IRIS_DARK,IRIS_LIGHT,HAIR,HAIR_LIGHT,HAIR_DARK,BLUE,BLUE_DARK,BLUE_LIGHT,SILVER,STEEL_DARK,GOLD,BASE,BLADE
-    p=argparse.ArgumentParser();p.add_argument('--preview',action='store_true');opt=p.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
+    p=argparse.ArgumentParser();p.add_argument('--preview',action='store_true');p.add_argument('--study',choices=['face','front','back']);opt=p.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
     for folder in ['output/saber','renders/saber','web/saber/assets']:(ROOT/folder).mkdir(parents=True,exist_ok=True)
     bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
-    SKIN=mat('Porcelain skin','#f8dfc8',0,.48);BLUSH=mat('Soft ear blush','#d99e8d');LIP=mat('Painted lips','#ac6a5f');INK=mat('Painted lash ink','#453b32',0,.58)
+    SKIN=mat('Porcelain skin','#ffe4cc',0,.48);BLUSH=mat('Soft ear blush','#d99e8d');LIP=mat('Painted lips','#ac6a5f');INK=mat('Painted lash ink','#302f2d',0,.58)
     IVORY=mat('Ivory silk','#f0ebdd',0,.48);IVORY_SHADOW=mat('Ivory edging','#cfc5a8');WHITE=mat('Eye glaze','#fff9ee',0,.19)
     IRIS=mat('Jade green eyes','#558c63',.10,.25);IRIS_DARK=mat('Deep jade','#183f39',.15,.25);IRIS_LIGHT=mat('Eye jade highlight','#a3bc72',0,.3)
-    HAIR=mat('Sculpted blonde hair','#d3a340',0,.48);HAIR_LIGHT=mat('Golden hair highlights','#e0b85e',0,.47);HAIR_DARK=mat('Hair strand shadows','#b38433',0,.52)
-    BLUE=mat('Royal blue enamel cloth','#152568',0,.56);BLUE_DARK=mat('Midnight blue details','#111e47',.08,.45);BLUE_LIGHT=mat('Blue silk highlights','#28488a',0,.58)
-    SILVER=mat('Polished silver armor','#c5cbd0',.77,.27);STEEL_DARK=mat('Steel engraved edges','#57677b',.72,.33);GOLD=mat('Pale antique gold','#c8ac69',.70,.29);BASE=mat('Midnight lacquer plinth','#202a32',.36,.29);BLADE=mat('EXCALIBUR luminous steel','#e0e6ed',.80,.22)
+    HAIR=mat('Sculpted blonde hair','#f3ca76',0,.48);HAIR_LIGHT=mat('Golden hair highlights','#f6d78f',0,.47);HAIR_DARK=mat('Hair strand shadows','#b99555',0,.52)
+    BLUE=mat('Royal blue enamel cloth','#153b82',0,.56);BLUE_DARK=mat('Midnight blue details','#111e47',.08,.45);BLUE_LIGHT=mat('Blue silk highlights','#28488a',0,.58)
+    SILVER=mat('Polished silver armor','#c5cbd0',.62,.32);STEEL_DARK=mat('Steel engraved edges','#57677b',.72,.33);GOLD=mat('Pale antique gold','#c8ac69',.70,.29);BASE=mat('Midnight lacquer plinth','#202a32',.36,.29);BLADE=mat('EXCALIBUR luminous steel','#e0e6ed',.80,.22)
     saber_sculpt.install(globals())
-    plinth();saber_sculpt.skirt();saber_sculpt.torso();saber_sculpt.head();saber_sculpt.arms();saber_sculpt.sword();rig=rig_and_animate()
+    plinth();saber_sculpt.skirt();saber_sculpt.torso();saber_sculpt.head();saber_sculpt.arms();saber_sculpt.sword();rig=None if opt.study else rig_and_animate()
     model_objects=list(bpy.context.scene.objects)
     scene=bpy.context.scene;scene.render.engine='BLENDER_EEVEE_NEXT';scene.eevee.taa_render_samples=64
     scene.render.resolution_x=1000;scene.render.resolution_y=1200;scene.render.resolution_percentage=100;scene.render.image_settings.file_format='PNG'
@@ -217,9 +225,14 @@ def main():
         bpy.ops.object.light_add(type='AREA');o=bpy.context.object;o.name=name;o.data.energy=power;o.data.shape='DISK';o.data.size=size;o.data.color=color;aim(o,at,(0,3,0))
     bpy.ops.mesh.primitive_plane_add(size=200);ground=bpy.context.object;ground.name='Studio cyclorama';ground.data.materials.append(mat('Warm studio backdrop','#e7e1d4',0,.8))
     bpy.ops.object.camera_add();camera=bpy.context.object;camera.data.type='ORTHO';camera.data.ortho_scale=6.65;scene.camera=camera;aim(camera,(6.3,4.4,11),(0,2.84,0))
+    if opt.study:
+        views={'face':((1.0,4.98,8),(0,4.96,0),1.65),'front':((4.6,4.1,11),(0,2.85,0),6.6),'back':((-5,4.4,-10),(0,2.85,0),6.6)}
+        at,target,scale=views[opt.study];aim(camera,at,target);camera.data.ortho_scale=scale
+        scene.render.filepath=str(ROOT/f'renders/saber/study-{opt.study}.png');bpy.ops.render.render(write_still=True)
+        return
     bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'output/saber/saber.blend'))
     if opt.preview:
-        for frame,name,at,target,scale in [(1,'front',(4.6,4.1,11),(0,2.85,0),6.6),(1,'face',(1.8,5.0,8),(0,4.95,0),1.75),(1,'back',(-5,4.4,-10),(0,2.85,0),6.6),(169,'salute',(5,4.6,11),(.5,2.9,0),6.7),(289,'raised',(5,4.6,11),(0,3.6,0),8.7),(313,'action',(5,4.6,11),(0,2.9,0),7.5)]:
+        for frame,name,at,target,scale in [(1,'front',(4.6,4.1,11),(0,2.85,0),6.6),(1,'face',(1.8,5.0,8),(0,4.95,0),1.75),(1,'profile',(8,5.0,1.8),(0,4.95,0),1.75),(313,'face-action',(1.8,5.0,8),(0,4.95,0),1.75),(1,'back',(-5,4.4,-10),(0,2.85,0),6.6),(169,'salute',(5,4.6,11),(.5,2.9,0),6.7),(289,'raised',(5,4.6,11),(0,3.6,0),8.7),(313,'action',(5,4.6,11),(0,2.9,0),7.5)]:
             scene.frame_set(frame);aim(camera,at,target);camera.data.ortho_scale=scale;scene.render.filepath=str(ROOT/f'renders/saber/{name}.png');bpy.ops.render.render(write_still=True)
     # Keep the editable .blend intact; merge only the unsaved export representation.
     scene.frame_set(1)
