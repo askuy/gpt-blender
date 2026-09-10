@@ -8,7 +8,7 @@ const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,preserv
 renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));
 renderer.outputColorSpace=THREE.SRGBColorSpace;
 renderer.toneMapping=THREE.AgXToneMapping;
-renderer.toneMappingExposure=1.2;
+renderer.toneMappingExposure=1.05;
 renderer.shadowMap.enabled=true;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 const scene=new THREE.Scene();
@@ -40,13 +40,13 @@ for(const [p,size,intensity,color] of [
 const pmrem=new THREE.PMREMGenerator(renderer);
 const environment=pmrem.fromScene(studio,.06,.1,100);
 scene.environment=environment.texture;
-scene.environmentIntensity=.6;
+scene.environmentIntensity=.45;
 studio.traverse(o=>{o.geometry?.dispose();o.material?.dispose();});pmrem.dispose();
-const hemi=new THREE.HemisphereLight('#f8f6ec','#7b7985',2.1);scene.add(hemi);
-const key=new THREE.DirectionalLight('#fff2dc',3.8);key.position.set(-3,12,5);key.castShadow=true;key.shadow.mapSize.set(2048,2048);
+const hemi=new THREE.HemisphereLight('#f8f6ec','#7b7985',.85);scene.add(hemi);
+const key=new THREE.DirectionalLight('#fff2dc',2.8);key.position.set(-3,12,5);key.castShadow=true;key.shadow.mapSize.set(2048,2048);
 Object.assign(key.shadow.camera,{left:-4,right:4,top:7,bottom:-3,near:.1,far:25});key.shadow.bias=-.00015;key.shadow.normalBias=.015;key.target.position.set(0,2.6,0);scene.add(key,key.target);
-const rim=new THREE.DirectionalLight('#c4d7ff',3);rim.position.set(4,5,-4);scene.add(rim);
-const fill=new THREE.DirectionalLight('#ffffff',1.1);fill.position.set(0,4,8);scene.add(fill);
+const rim=new THREE.DirectionalLight('#c4d7ff',2.4);rim.position.set(4,5,-4);scene.add(rim);
+const fill=new THREE.DirectionalLight('#ffffff',.55);fill.position.set(0,4,8);scene.add(fill);
 const floor=new THREE.Mesh(new THREE.PlaneGeometry(200,200),new THREE.ShadowMaterial({opacity:.065}));floor.rotation.x=-Math.PI/2;floor.position.y=.027;floor.receiveShadow=true;scene.add(floor);
 const shadowCanvas=document.createElement('canvas');shadowCanvas.width=256;shadowCanvas.height=256;
 const ctx=shadowCanvas.getContext('2d');const gradient=ctx.createRadialGradient(128,128,30,128,128,126);gradient.addColorStop(0,'rgba(12,20,28,.34)');gradient.addColorStop(.6,'rgba(12,20,28,.16)');gradient.addColorStop(1,'rgba(12,20,28,0)');ctx.fillStyle=gradient;ctx.fillRect(0,0,256,256);
@@ -68,8 +68,8 @@ const originalMaterials=new Map();const whiteResin=new THREE.MeshPhysicalMateria
 const clips={idle:[0,3.96],salute:[4,9.96],excalibur:[10,15.92]};
 const mobile=()=>canvas.clientWidth<700;
 const presets={
-  full:()=>{const active=mode==='excalibur';const position=mobile()?[7.0,4.45,13.6]:[6.3,4.5,11];return{position:position.map(n=>n*(active?1.23:1)),target:[active?.15:0,active?3.5:2.85,0]};},
-  face:()=>({position:[1.55,5.03,3.1],target:[0,4.89,0]}),
+  full:()=>{const active=mode==='excalibur';const position=mobile()?[7.0,4.45,13.6]:[4.8,4.3,10.7];return{position:position.map(n=>n*(active?1.23:1)),target:[active ? .15 : 0,active ? 3.5 : 2.85,0]};},
+  face:()=>({position:[.95,4.97,3.0],target:[0,4.94,0]}),
   back:()=>({position:mobile()?[-6,4.5,-13.8]:[-5.6,4.25,-11],target:[0,2.90,0]}),
   sword:()=>({position:[2.8,3.4,5.6],target:[0,2.52,.45]}),
 };
@@ -100,7 +100,7 @@ function toggleResin(){
 }
 function setLight(name){
   document.body.dataset.light=name;
-  const options={day:{key:'#fff2dc',rim:'#c4d7ff',keyPower:3.8,rimPower:3,ambient:2.1,exposure:1.2},night:{key:'#c5dbff',rim:'#b4c7ff',keyPower:2.2,rimPower:4,ambient:.55,exposure:1.15},warm:{key:'#ffe0ac',rim:'#efc490',keyPower:3.5,rimPower:2.8,ambient:1.6,exposure:1.18}};
+  const options={day:{key:'#fff2dc',rim:'#c4d7ff',keyPower:2.8,rimPower:2.4,ambient:.85,exposure:1.05},night:{key:'#c5dbff',rim:'#b4c7ff',keyPower:2.2,rimPower:4,ambient:.55,exposure:1.1},warm:{key:'#ffe0ac',rim:'#efc490',keyPower:2.5,rimPower:2.2,ambient:.75,exposure:1.05}};
   const p=options[name];key.color.set(p.key);rim.color.set(p.rim);key.intensity=p.keyPower;rim.intensity=p.rimPower;hemi.intensity=p.ambient;renderer.toneMappingExposure=p.exposure;
   document.querySelectorAll('button[data-light]').forEach(b=>{b.classList.toggle('selected',b.dataset.light===name);b.setAttribute('aria-pressed',String(b.dataset.light===name));});
 }
@@ -117,9 +117,18 @@ document.addEventListener('keydown',e=>{if($('about').open||['BUTTON','INPUT','A
 document.addEventListener('visibilitychange',()=>{last=performance.now();});
 
 try{
-  const gltf=await new GLTFLoader().loadAsync('./assets/saber.glb',event=>{if(event.total)$('loadProgress').style.width=`${Math.min(98,event.loaded/event.total*100)}%`;});
+  const gltf=await new GLTFLoader().loadAsync('./assets/saber.glb?v=2',event=>{if(event.total)$('loadProgress').style.width=`${Math.min(98,event.loaded/event.total*100)}%`;});
   model=gltf.scene;scene.add(model);
-  model.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;originalMaterials.set(o,o.material);if(o.material){o.material.side=THREE.DoubleSide;o.material.envMapIntensity=.65;}}if(o.isBone&&o.name==='handR')bone=o;if(o.isBone&&o.name==='sword')swordBone=o;});
+  model.traverse(o=>{if(o.isMesh){
+    const name=o.material?.name||'';
+    // Subpixel hair grooves and painted facial details should not produce
+    // stippled shadow-map artifacts on the small collectible's face.
+    const painted=/hair|skin|eye|iris|jade|lash|lips|blush/i.test(name);
+    o.castShadow=!/Hair strand shadows|Painted lash ink/.test(name);
+    o.receiveShadow=!painted;
+    originalMaterials.set(o,o.material);
+    if(o.material){o.material.side=THREE.DoubleSide;o.material.envMapIntensity=.65;}
+  }if(o.isBone&&o.name==='handR')bone=o;if(o.isBone&&o.name==='sword')swordBone=o;});
   if(!bone)model.traverse(o=>{if(o.isBone&&/hand.*R/i.test(o.name))bone=o;});
   mixer=new THREE.AnimationMixer(model);
   // Blender's scene starts at frame 1. Normalize every channel together so

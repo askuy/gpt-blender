@@ -16,6 +16,8 @@ GPT‑6 / Codex 编写并修改 Blender Python 脚本，Blender 负责生成几�
 
 ![Saber 的正面、背面、抬剑与蓄力姿态](output/saber/contact-sheet.jpg)
 
+第二版对照了 [Good Smile「Saber ～誓约胜利之剑～」商品图](https://www.goodsmile.info/en/product/2780/)，重新制作收尖的脸型、贴合面部的彩绘绿眼、斜刘海与编发、板甲接缝、分层护臂、前裙片与双层白色裙边，并重做 Excalibur 的护手与蓝色镶嵌。参考照片只用于观察，没有贴到模型上。细部造型在 [src/saber_sculpt.py](src/saber_sculpt.py) 中，骨骼和导出逻辑保留在主构建脚本中。
+
 - 默认有轻微呼吸、转头、眨眼和裙摆摆动。
 - 点击「抬剑致意」或「唤醒圣剑」，播放举剑、蓄力、挥剑和收剑动作；双手通过双骨骼 IK 跟随剑柄，烘焙后导出。
 - 可以自由旋转、拉近细节、切换三种灯光、查看白模，或暂停并保存 PNG 截图。暂停也会冻结光效。
@@ -30,7 +32,7 @@ npm run test:saber                   # 验证模型、真实骨骼运动和网�
 
 构建脚本：[src/build_saber.py](src/build_saber.py)；可编辑工程：[output/saber/saber.blend](output/saber/saber.blend)；网页模型：[web/saber/assets/saber.glb](web/saber/assets/saber.glb)。动作时间轴为 24 fps、384 帧：0–4 秒待机、4–10 秒致意、10–16 秒圣剑动作。完整工程保留独立部件，导出时才按材质合并网格；检查图保存在 `renders/saber/`。
 
-模型约 **7.52 MB（未压缩文件大小）**，首次访问另需下载 Three.js 和页面文件。资源加载完成后，播放动作、换灯光和旋转镜头不产生新的网络请求。网站继续使用免费 GitHub Pages，没有 Python / Go 后端或 AI API 调用；Python 只在离线 Blender 构建时使用。用户设置「减少动态效果」时，首次打开会保持静止。
+模型约 **8.8 MB（未压缩文件大小）**，首次访问另需下载 Three.js 和页面文件。资源加载完成后，播放动作、换灯光和旋转镜头不产生新的网络请求。网站继续使用免费 GitHub Pages，没有 Python / Go 后端或 AI API 调用；Python 只在离线 Blender 构建时使用。用户设置「减少动态效果」时，首次打开会保持静止。
 
 ## 本地预览
 
@@ -154,6 +156,7 @@ Saber 使用相同的环境变量，`PREVIEW_URL` 填站点根地址（程序会
 | `deploy/` | 静态网站发布与验证说明 |
 | `src/build_scene.py` | 几何体、材质、角色形态键与动画 |
 | `src/build_saber.py` | Saber 手办、双手握剑 IK、骨骼动画与 GLB 导出 |
+| `src/saber_sculpt.py` | 对照手办参考图重做的面部、发型、服装和剑 |
 | `src/verify_saber.mjs` | Saber 网页与动画验证 |
 | `web/saber/` | Saber 展柜及独立模型资源 |
 | `src/prepare_reference.py` | 原声提取、音量包络计算 |

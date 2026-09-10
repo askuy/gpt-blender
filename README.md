@@ -16,6 +16,8 @@ GPT‑6 / Codex wrote and revised the Blender Python scripts. Blender generated 
 
 ![Saber front, rear, salute and raised-sword poses](output/saber/contact-sheet.jpg)
 
+The second sculpt studies [Good Smile's Saber ~Triumphant Excalibur~ product photographs](https://www.goodsmile.info/en/product/2780/). It rebuilds the tapered face, flush painted eyes, swept fringe and braided bun, plate seams, layered vambraces, pointed front skirt panel, double ivory ruffle and angular sword guard. The photographs are visual references, not model textures. [src/saber_sculpt.py](src/saber_sculpt.py) contains the revised geometry; the main builder owns the rig and export.
+
 The figure breathes, blinks, turns her head and moves her skirt. “抬剑致意” plays a salute; “唤醒圣剑” raises, charges and swings the sword before returning to idle. Both hands follow the grip through baked two-bone IK. Pause freezes the pose and effects; the viewer also offers close-up cameras, three lighting presets, white resin material and PNG capture.
 
 The same **GPT‑6 / Codex → Blender Python → Eevee render inspection → revision → animated GLB → Three.js** workflow creates the model. Blender supplies the geometry, rig and eye shape keys; Three.js supplies the viewer, lighting and gold particles. This is a procedural fan-art study, with no official model files or motion capture.
@@ -28,7 +30,7 @@ npm run test:saber
 
 Sources: [build script](src/build_saber.py), [editable Blender scene](output/saber/saber.blend), [animated GLB](web/saber/assets/saber.glb). The 24 fps, 384-frame timeline contains idle at 0–4 seconds, salute at 4–10 and the sword action at 10–16. The saved scene preserves individual parts; only the export representation merges meshes by material.
 
-The GLB is approximately **7.52 MB uncompressed**, plus the shared Three.js and page files on first load. After loading, interaction does not trigger further requests. Hosting stays on free GitHub Pages, with no backend or AI API calls. Blender Python is only used offline. The viewer starts paused when the browser requests reduced motion.
+The GLB is approximately **8.8 MB uncompressed**, plus the shared Three.js and page files on first load. After loading, interaction does not trigger further requests. Hosting stays on free GitHub Pages, with no backend or AI API calls. Blender Python is only used offline. The viewer starts paused when the browser requests reduced motion.
 
 ## Run the interactive preview
 
@@ -161,6 +163,7 @@ The Saber check uses the same environment variables. Give `PREVIEW_URL` the site
 | [`deploy/`](deploy/) | Static site deployment and verification guide |
 | [`src/build_scene.py`](src/build_scene.py) | Procedural models, materials, facial shape keys and animation |
 | [`src/build_saber.py`](src/build_saber.py) | Saber geometry, two-handed sword IK, rig and animated GLB export |
+| [`src/saber_sculpt.py`](src/saber_sculpt.py) | Reference-led face, hair, costume and sword geometry |
 | [`src/verify_saber.mjs`](src/verify_saber.mjs) | Saber viewer and animation checks |
 | [`web/saber/`](web/saber/) | Saber exhibit and its model |
 | [`src/prepare_reference.py`](src/prepare_reference.py) | Dialogue extraction and amplitude analysis |
